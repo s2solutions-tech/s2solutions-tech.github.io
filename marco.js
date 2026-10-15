@@ -10,8 +10,8 @@
  *   - Para probar sin cambiar el archivo: agrega ?recorte=60 a la dirección.
  */
 (function () {
-  const RECORTE = 46;
-  const RECORTE_MOVIL = 66;
+  const RECORTE = 0;
+  const RECORTE_MOVIL = 0;
   const ANCHO_MOVIL = 600;
 
   const cfg = window.SGB || {};
