@@ -1,0 +1,4 @@
+/* La app de Google ocupa toda la pantalla; la franja del aviso queda fuera de la vista (arriba). */
+html, body { margin: 0; height: 100%; overflow: hidden; background: #121212; }
+#marco { position: absolute; left: 0; width: 100%; border: 0; display: block; }
+#sin-configurar { display: none; color: #ccc; font-family: Arial, sans-serif; text-align: center; padding: 40px 20px; }
