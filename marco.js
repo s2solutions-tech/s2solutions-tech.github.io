@@ -10,7 +10,7 @@
  *   - Para probar sin cambiar el archivo: agrega ?recorte=60 a la dirección.
  */
 (function () {
-  const RECORTE = 0;
+  const RECORTE = 0;         // calibrado: dentro de la página propia, Google no muestra el aviso
   const RECORTE_MOVIL = 0;
   const ANCHO_MOVIL = 600;
 
@@ -32,5 +32,7 @@
   }
   ajustar();
   window.addEventListener('resize', ajustar);
-  marco.src = cfg.app + (cfg.pedir ? '?pedir=1' : '');
+  // La página del QR pasa a la app el número de mesa (…/pedir/?mesa=5)
+  const mesa = (params.get('mesa') || '').replace(/[^0-9]/g, '');
+  marco.src = cfg.app + (cfg.pedir ? '?pedir=1' + (mesa ? '&mesa=' + mesa : '') : '');
 })();
