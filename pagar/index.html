@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16130f">
+  <meta name="robots" content="noindex">
+  <title>S2 Solutions · Método de pago</title>
+  <link rel="stylesheet" href="../marco.css">
+  <style>body { background: #16130f; }</style>
+</head>
+<body>
+  <iframe id="marco" title="S2 Solutions · Método de pago" allow="clipboard-write; payment"></iframe>
+  <div id="sin-configurar">Esta página todavía no está conectada.</div>
+  <script>
+    // Dirección del proyecto "SGB - Cobros" (termina en /exec). Recibe ?bar=…&k=… y los pasa a la app.
+    window.SGB = { app: 'https://script.google.com/macros/s/AKfycbyp0CAnJf9fAkQabZB0cvhAcd5-zsXfZOW_-A8xCTWTU0jYlwLk1UKdnTnRWibi_KUOJw/exec', pasar: ['bar', 'k'] };
+  </script>
+  <script src="../marco.js"></script>
+</body>
+</html>

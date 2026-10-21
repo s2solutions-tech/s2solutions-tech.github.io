@@ -2,7 +2,7 @@
  * Muestra la app de Google Apps Script a pantalla completa dentro de esta página
  * y recorta la franja superior donde Google pone su aviso.
  *
- * Cada página define antes:  window.SGB = { app: 'https://script.google.com/macros/s/.../exec', pedir: true|false }
+ * Cada página define antes:  window.SGB = { app: 'https://script.google.com/macros/s/.../exec', pedir: true|false, pasar: ['bar','k'] }
  *
  * Calibración del recorte (en píxeles), por si Google cambia el tamaño del aviso:
  *   - RECORTE        → pantallas anchas (computador, tablet)
@@ -34,5 +34,11 @@
   window.addEventListener('resize', ajustar);
   // La página del QR pasa a la app el número de mesa (…/pedir/?mesa=5)
   const mesa = (params.get('mesa') || '').replace(/[^0-9]/g, '');
-  marco.src = cfg.app + (cfg.pedir ? '?pedir=1' + (mesa ? '&mesa=' + mesa : '') : '');
+  let src = cfg.app + (cfg.pedir ? '?pedir=1' + (mesa ? '&mesa=' + mesa : '') : '');
+  // Otras páginas (por ejemplo la de pago) pasan a la app los parámetros que indiquen en "pasar"
+  (cfg.pasar || []).forEach(nombre => {
+    const v = params.get(nombre);
+    if (v) src += (src.indexOf('?') === -1 ? '?' : '&') + nombre + '=' + encodeURIComponent(v);
+  });
+  marco.src = src;
 })();
