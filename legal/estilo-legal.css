@@ -1,0 +1,14 @@
+:root { --fondo: #f7f4ee; --texto: #1d1914; --suave: #5f564b; --linea: #e3dccf; --acento: #9a5b00; --caja: #ffffff; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --fondo: #16130f; --texto: #f5efe4; --suave: #c9bfaf; --linea: #3a3128; --acento: #f0b445; --caja: #221d17; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.65; }
+main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+.marca { font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--acento); }
+h1 { font-size: 30px; line-height: 1.2; margin: 8px 0 4px; }
+.fecha { color: var(--suave); font-size: 14px; margin-bottom: 24px; }
+h2 { font-size: 19px; margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--linea); }
+p, li { font-size: 16px; }
+ul { padding-left: 22px; }
+.nota { background: var(--caja); border: 1px solid var(--linea); border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--suave); }
+a { color: var(--acento); }
+footer { margin-top: 40px; font-size: 14px; color: var(--suave); }
