@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SGB - YouTube automático
 // @namespace    https://s2solutions-tech.github.io/youtube
-// @version      4.0
+// @version      4.1
 // @description  Conecta el YouTube del bar con su app (S2 Solutions): muestra lo que suena, busca las canciones pedidas y reproduce la cola en orden.
 // @author       S2 Solutions
 // @match        https://www.youtube.com/*
@@ -49,6 +49,9 @@
   let ultimoInfo = '', ultimoCmd = GM_getValue('nd_ult_cmd', ''), ultimoCtl = GM_getValue('nd_ult_ctl', ''), pidiendo = false, buscando = false;
   let proxima = null, saltando = false, videoVisto = null, auto = true, enCurso = false, principal = true;
   let posicionar = null;   // { videoId, segundo }: al volver a una canción de la lista cortada a la mitad
+  let latencia = 0;        // cuánto tardó la última respuesta de la app (ms), para el diagnóstico del panel 🔌
+  // Lo último que se vio de cada video (para saber si YouTube pasó solo a otro porque el anterior terminó)
+  let visto = { id: null, restante: null }, anterior = { id: null, restante: null }, seAcaboSolo = false;
   // Identifica esta pestaña; se conserva aunque la página se recargue al cambiar de canción
   let INSTANCIA = '';
   try { INSTANCIA = sessionStorage.getItem('nd_instancia') || ''; } catch (e) {}
@@ -80,12 +83,14 @@
     return error;
   }
   function post(obj) {
-    return new Promise(function (resolver) {
+    const t0 = Date.now();
+    return new Promise(function (resolver0) {
+      const resolver = function (j) { latencia = Date.now() - t0; resolver0(j); };
       try {
         GM_xmlhttpRequest({
           method: 'POST', url: URL_APP, timeout: 30000,
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          data: JSON.stringify(Object.assign({ token: CLAVE, instancia: INSTANCIA, version: VERSION }, obj)),
+          data: JSON.stringify(Object.assign({ token: CLAVE, instancia: INSTANCIA, version: VERSION, lat: latencia }, obj)),
           onload: function (r) {
             let j = null;
             try { j = JSON.parse(r.responseText); } catch (e) {}
@@ -379,6 +384,9 @@
     if (!v || v.__nd) return;
     v.__nd = true;
     v.addEventListener('timeupdate', function () {
+      const idv = idActual();
+      if (idv !== visto.id) { anterior = visto; visto = { id: idv, restante: null }; }
+      if (isFinite(v.duration) && v.duration > 0) visto.restante = v.duration - v.currentTime;
       ajustarAlLlegar(v);
       if (saltando || !idActual() || !isFinite(v.duration) || v.duration < 5) return;
       if (v.duration - v.currentTime > 0.6) return;
@@ -408,7 +416,11 @@
   async function pulsoInterno() {
     engancharVideo();
     const d = leer() || {};
-    if (d.videoId !== videoVisto) { videoVisto = d.videoId; proxima = null; saltando = false; }
+    if (d.videoId !== videoVisto) {
+      // ¿YouTube pasó solo a este video porque el anterior terminó (y no fue el script el que saltó)?
+      seAcaboSolo = !!videoVisto && !saltando && anterior.id === videoVisto && anterior.restante !== null && anterior.restante < 5;
+      videoVisto = d.videoId; proxima = null; saltando = false;
+    }
     const clave = d.videoId ? d.videoId + '|' + d.titulo + '|' + d.pausado : '';
     const cambio = clave !== ultimoInfo;
     ultimoInfo = clave;
@@ -444,10 +456,17 @@
     }
     if (auto && 'proxima' in r) {
       proxima = r.proxima || null;
+      // Se pasó el momento (la respuesta llegó tarde) y YouTube puso otra canción de la lista: se pone la de la cola ya
+      if (seAcaboSolo && proxima && d.videoId && proxima !== d.videoId && !esPedida(d.videoId)) {
+        const v = video();
+        seAcaboSolo = false;
+        if (v && v.currentTime < 20) { console.log('[Bar] YouTube pasó solo a otra canción; se pone la de la cola.'); ir(proxima); return; }
+      }
       // Si hay canción en la cola, YouTube no debe poner la suya; si no hay, que siga sola
       // (salvo que suene una pedida y haya una lista a la cual volver: la devuelve el script)
       autoplayYoutube(!proxima && !(regreso && esPedida(d.videoId)));
     }
+    if (seAcaboSolo) { const v = video(); if (!v || v.currentTime >= 20) seAcaboSolo = false; }
     if (r.buscar && r.buscar.length && !buscando) atenderBusquedas(r.buscar);
   }
   setInterval(pulso, 3000);
