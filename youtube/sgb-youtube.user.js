@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SGB - YouTube automático
 // @namespace    https://s2solutions-tech.github.io/youtube
-// @version      4.2
+// @version      4.3
 // @description  Conecta el YouTube del bar con su app (S2 Solutions): muestra lo que suena, busca las canciones pedidas y reproduce la cola en orden.
 // @author       S2 Solutions
 // @match        https://www.youtube.com/*
@@ -140,9 +140,9 @@
     const titulo = ((d && d.video_id === id && d.title) || (h && h.textContent) || document.title.replace(/ - YouTube$/, '')).trim();
     const c = document.querySelector('ytd-watch-metadata ytd-channel-name a, #owner ytd-channel-name a');
     const canal = ((d && d.video_id === id && d.author) || (c && c.textContent) || '').trim();
-    const v = video();
-    const restante = (v && isFinite(v.duration) && v.duration > 0) ? Math.max(0, v.duration - v.currentTime) : null;
-    return { videoId: id, titulo: titulo, canal: canal, pausado: v ? v.paused : false, restante: restante };
+    const t = tiempos();
+    const restante = (t && isFinite(t.duracion) && t.duracion > 0) ? Math.max(0, t.duracion - t.actual) : null;
+    return { videoId: id, titulo: titulo, canal: canal, pausado: t ? t.pausado : false, restante: restante };
   }
 
   // ---------- Transmitiendo a un televisor (botón «Transmitir» de YouTube) ----------
@@ -176,6 +176,27 @@
     } catch (e) {}
     const v = video();
     return !!(v && v.paused);
+  }
+  /**
+   * Tiempo y estado de lo que suena. Al transmitir, el video de la página queda quieto (suena en el televisor): se lee del
+   * reproductor de YouTube, que sí sigue al televisor. Sin transmitir, del video de la página, como siempre.
+   */
+  function tiempos() {
+    if (transmitiendo()) {
+      try {
+        const p = reproductor();
+        if (p && typeof p.getCurrentTime === 'function' && typeof p.getDuration === 'function') {
+          const st = typeof p.getPlayerState === 'function' ? p.getPlayerState() : null;
+          return { actual: Number(p.getCurrentTime()) || 0, duracion: Number(p.getDuration()) || NaN, pausado: enPausa(), termino: st === 0 };
+        }
+      } catch (e) {}
+    }
+    const v = video();
+    return v ? { actual: v.currentTime, duracion: v.duration, pausado: v.paused, termino: !!v.ended } : null;
+  }
+  function pausarActual() {
+    const v = video(); if (v) v.pause();
+    if (transmitiendo()) { try { const p = reproductor(); if (p && p.pauseVideo) p.pauseVideo(); } catch (e) {} }
   }
   function darPlay(intento) {
     const v = video();
@@ -235,10 +256,10 @@
   function recordarLista() {
     const id = idActual();
     if (!id || esPedida(id)) return;   // de una pedida a otra: se conserva a dónde volver
-    const l = listaDePagina(), v = video();
+    const l = listaDePagina(), t = tiempos();
     if (!l) { guardarRegreso(null); return; }   // no sonaba una lista: al final, como siempre
-    const restante = (v && isFinite(v.duration)) ? v.duration - v.currentTime : 0;
-    guardarRegreso({ lista: l.lista, indice: l.indice, videoId: id, segundo: Math.floor(v ? v.currentTime : 0),
+    const restante = (t && isFinite(t.duracion)) ? t.duracion - t.actual : 0;
+    guardarRegreso({ lista: l.lista, indice: l.indice, videoId: id, segundo: Math.floor(t ? t.actual : 0),
                      completa: restante <= 3, siguiente: l.ids ? (l.ids[l.indice + 1] || '') : null, ts: Date.now() });
   }
   /** Se acabaron las pedidas: la lista sigue con la siguiente (si la anterior terminó) o donde iba (si se cortó). */
@@ -254,14 +275,18 @@
     }
     // No sonaba una lista, o la lista se acabó: como siempre, YouTube decide qué sigue
     autoplayYoutube(true);
-    const v = video();
-    if (v && v.paused && !v.ended) { const p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    const t = tiempos();
+    if (t && t.pausado && !t.termino) darPlay(1);
   }
   /** Al llegar a la canción de la lista: la lleva al segundo donde iba, o pasa a la siguiente si hacía falta. */
-  function ajustarAlLlegar(v) {
+  function ajustarAlLlegar(t) {
     const id = idActual();
-    if (posicionar && id === posicionar.videoId && isFinite(v.duration)) {
-      if (v.currentTime < posicionar.segundo - 5) v.currentTime = posicionar.segundo;
+    if (posicionar && id === posicionar.videoId && isFinite(t.duracion)) {
+      if (t.actual < posicionar.segundo - 5) {
+        const p = reproductor(), v = video();
+        if (transmitiendo() && p && p.seekTo) { try { p.seekTo(posicionar.segundo, true); } catch (e) {} }
+        else if (v) v.currentTime = posicionar.segundo;
+      }
       posicionar = null;
     }
     const avanzar = GM_getValue('sgb_avanzar', '');
@@ -307,7 +332,7 @@
   /** Pone una canción que pidió la app. */
   function ir(videoId) {
     if (!videoId) return;
-    if (idActual() === videoId) { const v = video(); if (v && v.paused) v.play(); return; }
+    if (idActual() === videoId) { const t = tiempos(); if (t && t.pausado) darPlay(1); return; }
     recordarLista();
     GM_setValue('sgb_pedida', videoId);
     irA({ videoId: videoId });
@@ -319,7 +344,7 @@
     const antes = idActual();
     // En pantalla completa: cambiar sin recargar la página, para no salir de pantalla completa
     if (reproductor() && enPantallaCompleta()) {
-      const v0 = video(); if (v0) v0.pause();
+      pausarActual();
       if (navegarComoYoutube(d)) {
         setTimeout(function () {
           if (d.lista) { if (idActual() === antes) location.href = 'https://www.youtube.com' + urlDe(d); }   // no se movió: se recarga
@@ -329,7 +354,7 @@
       }
       if (!d.lista && cargarEnReproductor(d.videoId)) return;
     }
-    const v = video(); if (v) v.pause();   // corta el video actual para que YouTube no ponga el suyo
+    pausarActual();   // corta el video actual para que YouTube no ponga el suyo
     location.href = 'https://www.youtube.com' + urlDe(d);
   }
   /** Enciende o apaga la reproducción automática de YouTube (botón del reproductor). */
@@ -450,27 +475,40 @@
     if (r && r.reproducir) ir(r.reproducir);
     else if (regreso && esPedida(id) && idActual() === id) volverALista();   // se acabaron las pedidas
   }
+  /** Cada avance de lo que suena (el video de la página, o el reproductor al transmitir). */
+  function avance() {
+    const t = tiempos();
+    if (!t) return;
+    const idv = idActual();
+    if (idv !== visto.id) { anterior = visto; visto = { id: idv, restante: null }; }
+    if (isFinite(t.duracion) && t.duracion > 0) visto.restante = t.duracion - t.actual;
+    ajustarAlLlegar(t);
+    if (saltando || !idActual() || !isFinite(t.duracion) || t.duracion < 5) return;
+    // Medio segundo antes del final (2 s al transmitir: el televisor informa más despacio), salta a la siguiente de la cola
+    if (t.duracion - t.actual > (transmitiendo() ? 2 : 0.6)) return;
+    if (proxima) { if (proxima !== idActual()) ir(proxima); return; }
+    // Última pedida y antes sonaba una lista: se detiene aquí (que YouTube no salte solo) y se pregunta a la app
+    if (auto && principal && regreso && esPedida(idActual()) && !t.pausado) { pausarActual(); terminado(); }
+  }
+  function alTerminar() {
+    if (!idActual() || saltando || !auto || !principal) return;
+    if (proxima && proxima !== idActual()) ir(proxima); else terminado();
+  }
   function engancharVideo() {
     const v = video();
     if (!v || v.__nd) return;
     v.__nd = true;
-    v.addEventListener('timeupdate', function () {
-      const idv = idActual();
-      if (idv !== visto.id) { anterior = visto; visto = { id: idv, restante: null }; }
-      if (isFinite(v.duration) && v.duration > 0) visto.restante = v.duration - v.currentTime;
-      ajustarAlLlegar(v);
-      if (saltando || !idActual() || !isFinite(v.duration) || v.duration < 5) return;
-      if (v.duration - v.currentTime > 0.6) return;
-      // Medio segundo antes del final, salta a la siguiente de la cola (ya conocida)
-      if (proxima) { if (proxima !== idActual()) ir(proxima); return; }
-      // Última pedida y antes sonaba una lista: se detiene aquí (que YouTube no salte solo) y se pregunta a la app
-      if (auto && principal && regreso && esPedida(idActual()) && !v.paused) { v.pause(); terminado(); }
-    });
-    v.addEventListener('ended', function () {
-      if (!idActual() || saltando || !auto || !principal) return;
-      if (proxima && proxima !== idActual()) ir(proxima); else terminado();
-    });
+    v.addEventListener('timeupdate', avance);
+    v.addEventListener('ended', alTerminar);
   }
+  // Al transmitir, el video de la página no avanza (no hay "timeupdate" ni "ended"): se revisa el reproductor cada medio segundo
+  let tvTermino = null;
+  setInterval(function () {
+    if (!transmitiendo()) { tvTermino = null; return; }
+    avance();
+    const t = tiempos(), id = idActual();
+    if (t && t.termino && id && tvTermino !== id) { tvTermino = id; alTerminar(); }
+  }, 500);
   async function pulso() {
     if (enCurso) return;   // no encimar consultas si la anterior todavía no responde
     enCurso = true;
@@ -511,8 +549,8 @@
       pausaApp = r.control.accion === 'PAUSA'; GM_setValue('nd_pausa_app', pausaApp ? 'si' : '');   // el modo TV respeta la pausa de la app
       const v = video();
       if (v) {
-        if (r.control.accion === 'PAUSA') v.pause();
-        else { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+        if (r.control.accion === 'PAUSA') pausarActual();   // al transmitir, también el reproductor del televisor
+        else darPlay(1);
       }
     }
     if (r.auto === false) {
@@ -532,15 +570,15 @@
       proxima = r.proxima || null;
       // Se pasó el momento (la respuesta llegó tarde) y YouTube puso otra canción de la lista: se pone la de la cola ya
       if (seAcaboSolo && proxima && d.videoId && proxima !== d.videoId && !esPedida(d.videoId)) {
-        const v = video();
+        const t = tiempos();
         seAcaboSolo = false;
-        if (v && v.currentTime < 20) { console.log('[Bar] YouTube pasó solo a otra canción; se pone la de la cola.'); ir(proxima); return; }
+        if (t && t.actual < 20) { console.log('[Bar] YouTube pasó solo a otra canción; se pone la de la cola.'); ir(proxima); return; }
       }
       // Si hay canción en la cola, YouTube no debe poner la suya; si no hay, que siga sola
       // (salvo que suene una pedida y haya una lista a la cual volver: la devuelve el script)
       autoplayYoutube(!proxima && !(regreso && esPedida(d.videoId)));
     }
-    if (seAcaboSolo) { const v = video(); if (!v || v.currentTime >= 20) seAcaboSolo = false; }
+    if (seAcaboSolo) { const t = tiempos(); if (!t || t.actual >= 20) seAcaboSolo = false; }
     if (r.buscar && r.buscar.length && !buscando) atenderBusquedas(r.buscar);
   }
   setInterval(pulso, 3000);
