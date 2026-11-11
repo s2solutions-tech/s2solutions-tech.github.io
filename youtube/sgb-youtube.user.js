@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SGB - YouTube automático
 // @namespace    https://s2solutions-tech.github.io/youtube
-// @version      4.1
+// @version      4.2
 // @description  Conecta el YouTube del bar con su app (S2 Solutions): muestra lo que suena, busca las canciones pedidas y reproduce la cola en orden.
 // @author       S2 Solutions
 // @match        https://www.youtube.com/*
@@ -26,6 +26,12 @@
   // Se lee apenas abre la página, antes de que YouTube cambie la dirección
   const conexionNueva = /[#&]sgb-conectar=([^&]+)/.exec(location.hash || '');
   if (conexionNueva) { try { history.replaceState(history.state, '', location.pathname + location.search); } catch (e) {} }   // la clave no queda en la barra
+  // Modo televisor a mano (por si YouTube cambia y no se detecta solo): …youtube.com/#sgb-tv=si | no | auto
+  const tvHash = /[#&]sgb-tv=(si|no|auto)/.exec(location.hash || '');
+  if (tvHash) {
+    GM_setValue('sgb_tv', tvHash[1] === 'auto' ? '' : tvHash[1]);
+    try { history.replaceState(history.state, '', location.pathname + location.search); } catch (e) {}
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 
   function iniciar() {
@@ -138,6 +144,71 @@
     const restante = (v && isFinite(v.duration) && v.duration > 0) ? Math.max(0, v.duration - v.currentTime) : null;
     return { videoId: id, titulo: titulo, canal: canal, pausado: v ? v.paused : false, restante: restante };
   }
+
+  // ---------- Transmitiendo a un televisor (botón «Transmitir» de YouTube) ----------
+  // Al transmitir, YouTube deja en pausa en el televisor la canción que empieza (de la cola o de su lista). Solo en ese modo:
+  // si una canción nueva queda en pausa y nadie la pausó desde la app, se le da la misma orden que «Reanudar», se verifica y
+  // se reintenta. Si el administrador pausó desde la app, se respeta. Fuera de la transmisión no se hace nada distinto.
+  let pausaApp = GM_getValue('nd_pausa_app', '') === 'si';
+  let tvSenal = '', tvVigilado = null, tvReanudadas = 0, tvUltima = '';
+  function transmitiendo() {
+    const forzado = GM_getValue('sgb_tv', '');
+    if (forzado === 'si') { tvSenal = 'a mano (#sgb-tv=si)'; return true; }
+    if (forzado === 'no') { tvSenal = ''; return false; }
+    try {
+      const p = pagina.document.getElementById('movie_player');
+      if (p && p.classList && p.classList.contains('ytp-remote')) { tvSenal = 'reproductor en modo remoto'; return true; }
+      const aviso = pagina.document.querySelector('.ytp-remote-display-status, .ytp-remote-display-status-text');
+      if (aviso && aviso.offsetParent !== null && /\S/.test(aviso.textContent || '')) { tvSenal = 'aviso «Reproduciendo en…»'; return true; }
+    } catch (e) {}
+    tvSenal = '';
+    return false;
+  }
+  /** ¿En pausa? Primero lo que dice el reproductor de YouTube (también al transmitir); si no, el video de la página. */
+  function enPausa() {
+    try {
+      const p = reproductor();
+      if (p && typeof p.getPlayerState === 'function') {
+        const s = p.getPlayerState();
+        if (s === 1 || s === 3) return false;              // reproduciendo / cargando
+        if (s === 2 || s === 5 || s === -1) return true;   // en pausa / lista para empezar / sin empezar
+      }
+    } catch (e) {}
+    const v = video();
+    return !!(v && v.paused);
+  }
+  function darPlay(intento) {
+    const v = video();
+    if (v) { const p = v.play(); if (p && p.catch) p.catch(function () {}); }   // la misma orden que «Reanudar»
+    if (intento >= 3) { try { const r = reproductor(); if (r && r.playVideo) r.playVideo(); } catch (e) {} }   // respaldo
+  }
+  function vigilarTv() {
+    if (!auto || !principal || pausaApp || !transmitiendo()) { tvVigilado = null; return; }
+    const id = idActual();
+    if (!id) return;
+    const ahora = Date.now();
+    if (!tvVigilado || tvVigilado.id !== id) tvVigilado = { id: id, desde: ahora, intentos: 0, listo: false, proximo: ahora + 2500 };
+    const t = tvVigilado;
+    if (t.listo) return;
+    if (!enPausa()) {   // ya suena: desde aquí una pausa es de alguien
+      if (t.intentos && !t.contada) {
+        t.contada = true; tvReanudadas++;
+        tvUltima = 'arrancó sola en el intento ' + t.intentos + ' (' + new Date().toLocaleTimeString() + ')';
+        console.log('[Bar] Transmitiendo: la canción quedó en pausa al empezar y se reanudó (intento ' + t.intentos + ').');
+      }
+      if (t.intentos || ahora - t.desde > 1500) t.listo = true;
+      return;
+    }
+    if (t.intentos >= 5 || ahora - t.desde > 45000) {
+      t.listo = true;
+      if (t.intentos) tvUltima = 'no arrancó después de ' + t.intentos + ' intentos (' + new Date().toLocaleTimeString() + ')';
+      return;
+    }
+    if (ahora < t.proximo) return;
+    t.intentos++; t.proximo = ahora + 3000;
+    darPlay(t.intentos);   // en la próxima revisión (1 s) se verifica si arrancó; si no, se reintenta a los 3 s
+  }
+  setInterval(vigilarTv, 1000);
 
   // ---------- Volver a la lista de reproducción de YouTube después de las canciones pedidas ----------
   // "pedida" = el último video que puso la app. "regreso" = dónde iba la lista cuando la app la interrumpió.
@@ -410,7 +481,7 @@
       else if (ultimoProblema) indicador('🟡', 'La app respondió lento, reintentando…');
       else if (!idActual()) indicador('🟡', 'Conectado' + (BAR ? ' con «' + BAR + '»' : '') + '. Pon un video para que la app lo vea.');
       else if (!principal) indicador('🟡', 'Conectado, en espera: otra ventana controla la música.');
-      else indicador('🟢', 'Música automática conectada' + (BAR ? ' con «' + BAR + '»' : '') + (auto ? '' : ' (control manual)'));
+      else indicador('🟢', 'Música automática conectada' + (BAR ? ' con «' + BAR + '»' : '') + (auto ? '' : ' (control manual)') + (transmitiendo() ? ' · 📺 TV' : ''));
     }
   }
   async function pulsoInterno() {
@@ -424,7 +495,8 @@
     const clave = d.videoId ? d.videoId + '|' + d.titulo + '|' + d.pausado : '';
     const cambio = clave !== ultimoInfo;
     ultimoInfo = clave;
-    const r = await post(Object.assign({ accion: 'pulso', cambio: cambio && !!d.videoId }, d));
+    const tv = transmitiendo();
+    const r = await post(Object.assign({ accion: 'pulso', cambio: cambio && !!d.videoId, tv: tv, tvSenal: tvSenal, tvN: tvReanudadas, tvUltima: tvUltima, pausaApp: pausaApp }, d));
     if (!r || !r.ok) return;
     if (r.principal === false) {
       // Hay otra ventana de YouTube reproduciendo: esta no toca nada (solo puede ayudar a buscar canciones)
@@ -436,6 +508,7 @@
     principal = true;
     if (r.control && r.control.id !== ultimoCtl) {   // pausar / reanudar desde la app
       ultimoCtl = r.control.id; GM_setValue('nd_ult_ctl', ultimoCtl);
+      pausaApp = r.control.accion === 'PAUSA'; GM_setValue('nd_pausa_app', pausaApp ? 'si' : '');   // el modo TV respeta la pausa de la app
       const v = video();
       if (v) {
         if (r.control.accion === 'PAUSA') v.pause();
@@ -451,6 +524,7 @@
     }
     if (auto && r.comando && r.comando.id !== ultimoCmd) {
       ultimoCmd = r.comando.id; GM_setValue('nd_ult_cmd', ultimoCmd);
+      pausaApp = false; GM_setValue('nd_pausa_app', '');   // «Poner ya» desde la app: que suene
       ir(r.comando.videoId);
       return;
     }
