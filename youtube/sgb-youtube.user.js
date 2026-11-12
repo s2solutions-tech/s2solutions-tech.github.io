@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SGB - YouTube automático
 // @namespace    https://s2solutions-tech.github.io/youtube
-// @version      4.3
+// @version      4.4
 // @description  Conecta el YouTube del bar con su app (S2 Solutions): muestra lo que suena, busca las canciones pedidas y reproduce la cola en orden.
 // @author       S2 Solutions
 // @match        https://www.youtube.com/*
@@ -150,7 +150,21 @@
   // si una canción nueva queda en pausa y nadie la pausó desde la app, se le da la misma orden que «Reanudar», se verifica y
   // se reintenta. Si el administrador pausó desde la app, se respeta. Fuera de la transmisión no se hace nada distinto.
   let pausaApp = GM_getValue('nd_pausa_app', '') === 'si';
-  let tvSenal = '', tvVigilado = null, tvReanudadas = 0, tvUltima = '';
+  let tvSenal = '', tvVigilado = null, tvReanudadas = 0, tvUltima = '', tvSalto = '';
+  /** Diagnóstico: cada vez que el script cambia la canción al transmitir, cómo lo hizo y si el televisor cambió. */
+  function anotarSalto(id, via, ok) {
+    tvSalto = id + ' por ' + via + ': ' + (ok === undefined ? 'enviado' : ok ? '✓ cambió' : '✗ no cambió') + ' (' + new Date().toLocaleTimeString() + ')';
+    console.log('[Bar] Transmitiendo: ' + tvSalto);
+  }
+  /** Diagnóstico: lo que el reproductor dice del televisor (segundo / duración, estado). */
+  function lecturaTv() {
+    try {
+      const p = reproductor();
+      if (!p || typeof p.getCurrentTime !== 'function') return 'sin reproductor';
+      return Math.round(Number(p.getCurrentTime()) || 0) + '/' + Math.round(Number(p.getDuration && p.getDuration()) || 0) + ' s, estado ' +
+             (typeof p.getPlayerState === 'function' ? p.getPlayerState() : '?');
+    } catch (e) { return 'error: ' + (e && e.message || e); }
+  }
   function transmitiendo() {
     const forzado = GM_getValue('sgb_tv', '');
     if (forzado === 'si') { tvSenal = 'a mano (#sgb-tv=si)'; return true; }
@@ -342,6 +356,36 @@
     saltando = true;
     posicionar = d.segundo ? { videoId: d.videoId, segundo: d.segundo } : null;
     const antes = idActual();
+    // Al transmitir, recargar la página no cambia lo que suena en el televisor (la página vuelve a unirse a la transmisión, que
+    // sigue con lo suyo): se le pide la canción al reproductor de YouTube, que se la pasa al televisor. Si a los 6 s no cambió,
+    // se intenta como siempre (navegación interna y, si tampoco, recargando).
+    if (transmitiendo() && reproductor()) {
+      const p = reproductor();
+      let enviado = false;
+      try {
+        if (d.lista && typeof p.loadPlaylist === 'function') p.loadPlaylist({ list: d.lista, listType: 'playlist', index: d.indice || 0, startSeconds: d.segundo || 0 });
+        else p.loadVideoById(d.videoId, d.segundo || 0);
+        enviado = true;
+      } catch (e) {}
+      if (enviado) {
+        try { history.replaceState(history.state, '', urlDe(d)); } catch (e) {}
+        anotarSalto(d.videoId, 'el reproductor');
+        setTimeout(function () {
+          if (idActual() === d.videoId) { anotarSalto(d.videoId, 'el reproductor', true); return; }
+          anotarSalto(d.videoId, 'el reproductor', false);
+          if (navegarComoYoutube(d)) {
+            setTimeout(function () {
+              if (idActual() === d.videoId) { anotarSalto(d.videoId, 'navegación interna', true); return; }
+              anotarSalto(d.videoId, 'navegación interna', false);
+              location.href = 'https://www.youtube.com' + urlDe(d);
+            }, 6000);
+            return;
+          }
+          location.href = 'https://www.youtube.com' + urlDe(d);
+        }, 6000);
+        return;
+      }
+    }
     // En pantalla completa: cambiar sin recargar la página, para no salir de pantalla completa
     if (reproductor() && enPantallaCompleta()) {
       pausarActual();
@@ -534,7 +578,8 @@
     const cambio = clave !== ultimoInfo;
     ultimoInfo = clave;
     const tv = transmitiendo();
-    const r = await post(Object.assign({ accion: 'pulso', cambio: cambio && !!d.videoId, tv: tv, tvSenal: tvSenal, tvN: tvReanudadas, tvUltima: tvUltima, pausaApp: pausaApp }, d));
+    const r = await post(Object.assign({ accion: 'pulso', cambio: cambio && !!d.videoId, tv: tv, tvSenal: tvSenal, tvN: tvReanudadas, tvUltima: tvUltima, pausaApp: pausaApp,
+                                         tvSalto: tvSalto, tvLectura: tv ? lecturaTv() : '' }, d));
     if (!r || !r.ok) return;
     if (r.principal === false) {
       // Hay otra ventana de YouTube reproduciendo: esta no toca nada (solo puede ayudar a buscar canciones)
