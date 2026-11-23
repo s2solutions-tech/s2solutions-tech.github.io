@@ -2,23 +2,476 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sistema de gestión para bares</title>
-  <style>
-    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-           background: #121212; color: #f1f1f1; font-family: Arial, sans-serif; text-align: center; padding: 24px; box-sizing: border-box; }
-    h1 { font-size: 26px; margin: 10px 0; }
-    p { color: #bdbdbd; max-width: 460px; line-height: 1.5; }
-    a { display: inline-block; margin-top: 18px; background: #25d366; color: #fff; text-decoration: none;
-        padding: 12px 22px; border-radius: 10px; font-weight: bold; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>S2 Solutions · POS y música con QR para tu negocio</title>
+  <meta name="description" content="Tus clientes piden canciones, karaoke y llaman al personal desde el QR de su mesa. Cobra rápido y factura sin enredos. Para bares, restaurantes, licoreras, tiendas y más. Prueba gratis 8 días.">
+  <meta name="theme-color" content="#111318">
+  <link rel="canonical" href="https://s2solutions-tech.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:site_name" content="S2 Solutions">
+  <meta property="og:title" content="S2 Solutions · Suena a lo que pide la mesa">
+  <meta property="og:description" content="Música con QR en cada mesa, POS y facturación electrónica para tu negocio. Prueba gratis 8 días.">
+  <meta property="og:url" content="https://s2solutions-tech.github.io/">
+  <meta property="og:image" content="https://s2solutions-tech.github.io/recursos/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="S2 Solutions: un celular escanea el QR de la mesa para pedir canciones">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="recursos/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="recursos/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="recursos/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="recursos/web.css">
 </head>
 <body>
-  <div>
-    <div style="font-size:56px">🍻</div>
-    <h1>Sistema de gestión para bares</h1>
-    <p>Cuentas, ventas, inventario y balance. Pedidos de canciones y karaoke desde el celular, cuenta y alertas a la mesera con un QR.</p>
-    <a href="https://wa.me/573234924680?text=Hola%20Santiago%2C%20quiero%20conocer%20el%20sistema%20para%20bares" target="_blank" rel="noopener">Pide una demo por WhatsApp</a>
+<a class="saltar" href="#principal">Saltar al contenido</a>
+
+<header class="portada">
+  <div class="envoltura">
+    <div class="barra-sup">
+      <a class="marca" href="./" aria-label="S2 Solutions, inicio">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+          <defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1769FF"/><stop offset="1" stop-color="#20C7D9"/></linearGradient></defs>
+          <rect x="1" y="1" width="32" height="32" rx="9" fill="#181B22" stroke="rgba(233,237,242,.16)"/>
+          <rect x="8" y="17" width="4" height="10" rx="2" fill="url(#g)"/><rect x="15" y="11" width="4" height="16" rx="2" fill="url(#g)"/><rect x="22" y="6" width="4" height="21" rx="2" fill="url(#g)"/>
+        </svg>
+        <span>S2 Solutions<small>POS Y MÚSICA CON QR</small></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a class="link" href="#cliente">Cómo funciona</a>
+        <a class="link" href="#planes">Planes</a>
+        <a class="link" href="#preguntas">Preguntas</a>
+        <a class="link" href="#contacto">Contacto</a>
+        <a class="btn btn-borde btn-chico" href="#" data-abrir-sesion>Iniciar sesión</a>
+      </nav>
+    </div>
+
+    <div class="heroe">
+      <div>
+        <span class="etiqueta">Música con QR en cada mesa</span>
+        <h1>
+          <span class="prota">Suena a lo que pide la mesa.</span>
+          <span>Cobra rápido.</span>
+          <span data-factura>Factura sin enredos.</span>
+        </h1>
+        <p class="apoyo">Tus clientes no instalan nada: solo escanean el QR de su mesa, piden su canción o su karaoke y llaman al personal desde el celular. Tu personal cobra y lleva el negocio en el mismo sistema, que funciona desde el navegador, sin descargar apps.</p>
+        <div class="acciones">
+          <a class="btn btn-azul" href="#planes" data-abrir-plan="COMPLETO" data-inicio="PRUEBA">Prueba gratis 8 días</a>
+          <a class="btn btn-borde" href="#planes">Ver planes</a>
+        </div>
+        <p class="tipos">Para bares, restaurantes, licoreras, tiendas y más</p>
+        <div class="lema">Tecnología · Estrategia · Soluciones reales</div>
+      </div>
+
+      <div class="escena" role="img" aria-label="Ejemplo: un cliente escanea el QR de su mesa, pide una canción y llama al personal desde el celular">
+        <div class="mesa-sombra"></div>
+        <div class="tarjeta-qr" aria-hidden="true">
+          <div class="mesa">Mesa 4</div>
+          <svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg>
+          <div class="pide">Pide tu canción<small>Escanea con la cámara</small></div>
+        </div>
+        <div class="celular" aria-hidden="true">
+          <div class="pantalla">
+            <div class="haz"></div>
+            <div class="aviso-ok">✓ Tu canción quedó en la cola</div>
+            <div class="p-cab"><span class="p-bar">Tu local</span><span class="p-mesa">Mesa 4</span></div>
+            <div class="p-tabs"><span class="on">🎵 Canciones</span><span>🎤 Karaoke</span></div>
+            <div class="p-buscar">🔍 Busca tu canción o artista</div>
+            <div class="p-titulo">Sonando y en la cola</div>
+            <div class="p-lista">
+              <div class="p-cancion sonando"><span class="n"><span class="eq"><i></i><i></i><i></i><i></i></span></span><span><b>Rebelión</b><small>Joe Arroyo</small></span><span class="tag">Mesa 2</span></div>
+              <div class="p-cancion tuya"><span class="n">2</span><span><b>La gota fría</b><small>Carlos Vives</small></span><span class="tag">Tu mesa</span></div>
+              <div class="p-cancion"><span class="n">3</span><span><b>Bohemian Rhapsody</b><small>🎤 Karaoke · Queen</small></span><span class="tag">Mesa 7</span></div>
+              <div class="p-cancion"><span class="n">4</span><span><b>Ojitos lindos</b><small>Bad Bunny</small></span><span class="tag">Barra 3</span></div>
+            </div>
+            <div class="p-acciones">
+              <div class="p-btn llamar">🙋 Llamar al personal</div>
+              <div class="p-btn sec">🧾 Pedir la cuenta</div>
+            </div>
+          </div>
+        </div>
+        <div class="burbuja" aria-hidden="true"><i></i>Mesa 4 llama al personal</div>
+      </div>
+    </div>
   </div>
+</header>
+
+<main id="principal">
+
+<section class="seccion" id="cliente">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Así lo vive tu cliente</span>
+      <h2>Del QR a los parlantes en menos de un minuto</h2>
+      <p>Para negocios con ambiente: bares, gastrobares, discotecas, karaokes y restaurantes con música. Tus clientes no instalan nada: solo escanean el QR con la cámara del celular.</p>
+    </div>
+    <div class="pasos">
+      <div class="paso"><span class="num"><b>1</b>Escanea</span><h3>Escanea el QR de su mesa</h3><p>Cada mesa o zona tiene su QR. Se abre la página de tu negocio, con tu nombre y tu logo.</p><span class="flecha"></span></div>
+      <div class="paso"><span class="num"><b>2</b>Pide</span><h3>Pide su canción o su karaoke</h3><p>Busca la canción, la ve entrar a la cola y sabe cuántas faltan. Si necesita algo, llama al personal o pide la cuenta.</p><span class="flecha"></span></div>
+      <div class="paso"><span class="num"><b>3</b>Suena</span><h3>Suena en tu local</h3><p>La cola avanza sola en el computador que pone la música. Tú decides qué se aprueba y cuántas canciones puede pedir cada mesa.</p></div>
+    </div>
+    <div class="video" id="video">
+      <button type="button" aria-label="Ver el video de S2 Solutions">
+        <span class="play">
+          <span><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="#fff"/></svg></span>
+          <strong>Así funciona en un local</strong>
+          <small>Espacio para el video de YouTube</small>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="seccion gris">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Lo que gana tu negocio</span>
+      <h2>Cuando la mesa pone la música, la noche dura más</h2>
+    </div>
+    <div class="ganancias">
+      <div class="gana">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></span>
+        <h3>Más ambiente</h3><p>Suena lo que tu público quiere oír, y el karaoke se arma sin papelitos ni filas en la cabina.</p>
+      </div>
+      <div class="gana">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <h3>La gente se queda y consume más</h3><p>Quien espera su canción no se va. Y mientras espera, pide otra ronda.</p>
+      </div>
+      <div class="gana">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6"/></svg></span>
+        <h3>Menos filas en la barra</h3><p>La cuenta y los llamados salen desde la mesa: la barra atiende a quien está comprando.</p>
+      </div>
+      <div class="gana">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+        <h3>Menos vueltas del personal</h3><p>El personal sabe qué mesa llama y para qué, y llega una sola vez con lo que se necesita.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="funciones">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Y además</span>
+      <h2>Todo para operar tu negocio</h2>
+      <p>Para cualquier negocio, tenga música o no. Funciona desde el navegador del celular, la tablet o el computador, sin descargar apps.</p>
+    </div>
+    <div class="ademas" id="ademas">
+      <div class="modulo">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+        <h3>POS para tu negocio</h3>
+        <p>Cuentas por mesa y zona o venta directa en el mostrador, cobros en efectivo, transferencia o datáfono, y el balance del día al cierre.</p>
+        <div class="chips"><span>Mesas y zonas</span><span>Venta directa</span><span>Comandas</span><span>Inventario</span><span>Balance</span><span>Usuarios y permisos</span></div>
+      </div>
+      <div class="modulo" data-factura>
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+        <h3>Facturación electrónica DIAN</h3>
+        <p>Al cobrar, el sistema emite la factura electrónica o el documento POS electrónico, con su CUFE y su QR en el tiquete. Para cualquier negocio en Colombia.</p>
+        <div class="chips"><span>Factura electrónica</span><span>POS electrónico</span><span>Consumidor final o con datos</span><span>Envío por correo</span></div>
+      </div>
+      <div class="modulo">
+        <span class="icono"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></span>
+        <h3>Soporte personalizado</h3>
+        <p>Te acompañamos por WhatsApp desde el primer día y ajustamos el sistema a la medida de tu negocio.</p>
+        <div class="chips"><span>WhatsApp</span><span>Configuración inicial</span><span>Ajustes a tu medida</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion gris" id="empezar">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Cómo empezar</span>
+      <h2>Tu sistema listo en tres pasos</h2>
+    </div>
+    <div class="pasos">
+      <div class="paso"><span class="num"><b>1</b>Pide</span><h3>Pide tu prueba o elige tu plan</h3><p>Llena el formulario en un minuto. No te pedimos tarjeta para la prueba.</p><span class="flecha"></span></div>
+      <div class="paso"><span class="num"><b>2</b>Configura</span><h3>Te dejamos todo listo</h3><p>Te contactamos en menos de 24 horas y creamos tu sistema con el nombre y el logo de tu negocio, y los usuarios de tu personal.</p><span class="flecha"></span></div>
+      <div class="paso"><span class="num"><b>3</b>Empieza</span><h3>Imprime tus QR y abre</h3><p>Pones los QR en las mesas, tu personal entra desde el navegador y empiezas a vender esa misma noche.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="planes">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Planes</span>
+      <h2>Elige cómo empezar</h2>
+      <p>Precios mensuales en pesos colombianos (COP). Prueba gratis 8 días, sin compromiso.</p>
+    </div>
+    <div class="planes">
+      <div class="plan">
+        <h3>Música</h3>
+        <p class="para">El QR en las mesas, para negocios con ambiente que ya tienen con qué cobrar.</p>
+        <div class="precio"><b>$49.000</b><small>COP / mes</small></div>
+        <ul>
+          <li>QR por mesa o por zona</li>
+          <li>Pedir canciones (YouTube o Spotify)</li>
+          <li>Karaoke</li>
+          <li>Aprobar canciones antes de que entren a la cola</li>
+          <li>Llamar al personal</li>
+          <li>Anuncios para los clientes</li>
+          <li>Concursos y votaciones</li>
+          <li>Decoraciones de temporada</li>
+        </ul>
+        <div class="nota"><b>¿Ya tienes sistema de cobro?</b> Usa solo el plan Música.</div>
+        <a class="btn btn-borde-claro" href="#" data-abrir-plan="MUSICA">Elegir plan</a>
+      </div>
+      <div class="plan">
+        <h3>POS</h3>
+        <p class="para">Para cobrar y llevar tu negocio en orden.</p>
+        <div class="precio"><b>$79.000</b><small>COP / mes</small></div>
+        <ul>
+          <li>Cuentas por mesa y zona</li>
+          <li>Venta directa</li>
+          <li>Comandas a cocina y barra</li>
+          <li>Precuenta</li>
+          <li>Mover mesa</li>
+          <li>Cortesías</li>
+          <li>Propina</li>
+          <li>Recargo por datáfono</li>
+          <li>Inventario, gastos y balance</li>
+          <li>Usuarios y permisos</li>
+          <li>Impresión de tiquetes</li>
+        </ul>
+        <div class="nota" data-factura><b>Facturación electrónica:</b> + $30.000 COP / mes</div>
+        <a class="btn btn-borde-claro" href="#" data-abrir-plan="POS">Elegir plan</a>
+      </div>
+      <div class="plan recomendado">
+        <span class="sello">Recomendado</span>
+        <h3>Completo</h3>
+        <p class="para">POS y música en un solo sistema<span data-factura>, con facturación electrónica</span>.</p>
+        <div class="precio"><b>$109.000</b><small>COP / mes</small></div>
+        <ul>
+          <li class="todo">Todo el plan POS</li>
+          <li class="todo">Todo el plan Música</li>
+          <li data-factura>Facturación electrónica DIAN, hasta 500 documentos al mes</li>
+          <li>Soporte personalizado por WhatsApp</li>
+        </ul>
+        <a class="btn btn-azul" href="#" data-abrir-plan="COMPLETO">Elegir plan</a>
+      </div>
+    </div>
+    <div class="extra"><span data-factura><b>Documentos adicionales:</b> se cotizan.</span><span><b>Soporte personalizado</b> por WhatsApp en todos los planes.</span></div>
+  </div>
+</section>
+
+<section class="seccion gris" id="testimonios" data-testimonios>
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Testimonios</span>
+      <h2>Lo que dicen nuestros clientes</h2>
+    </div>
+    <div class="testimonios">
+      <div class="testimonio pendiente"><b>Espacio para un testimonio</b><span>Solo con permiso escrito del cliente.</span></div>
+      <div class="testimonio pendiente"><b>Espacio para un testimonio</b><span>Solo con permiso escrito del cliente.</span></div>
+      <div class="testimonio pendiente"><b>Espacio para un testimonio</b><span>Solo con permiso escrito del cliente.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="preguntas">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Preguntas frecuentes</span>
+      <h2>Lo que nos preguntan antes de empezar</h2>
+    </div>
+    <div class="preguntas">
+      <details>
+        <summary>¿Hay que instalar algo?</summary>
+        <div class="resp">
+          <p>Tus clientes no instalan nada: solo escanean el QR con la cámara del celular.</p>
+          <p>Tu personal usa el sistema desde el navegador del celular, la tablet o el computador, sin descargar apps. Para la música, el computador que la reproduce necesita un complemento del navegador; te ayudamos a configurarlo.</p>
+        </div>
+      </details>
+      <details>
+        <summary>¿Funciona en el celular?</summary>
+        <div class="resp"><p>Sí. Está pensado primero para el celular: el personal toma pedidos y cobra desde su teléfono, y también funciona en tablets y computadores.</p></div>
+      </details>
+      <details>
+        <summary>¿Funciona en mi país?</summary>
+        <div class="resp">
+          <p>Sí. El sistema funciona desde cualquier país con conexión a internet. Los precios están en pesos colombianos (COP) y se pagan con tarjeta; tu banco hace la conversión a tu moneda.</p>
+          <p data-factura>La facturación electrónica es para negocios en Colombia (DIAN).</p>
+        </div>
+      </details>
+      <details>
+        <summary>¿Qué pasa si se va el internet?</summary>
+        <div class="resp">
+          <p>El sistema funciona en línea. Si la conexión se cae un momento, lo que tu personal registra en las cuentas y los cobros queda guardado en el equipo y se envía solo cuando vuelve la conexión. No se pierde nada.</p>
+          <p>Te recomendamos tener los datos del celular como respaldo para las caídas largas.</p>
+        </div>
+      </details>
+      <details>
+        <summary>¿Puedo cancelar cuando quiera?</summary>
+        <div class="resp"><p>Sí. No hay contratos de permanencia. Al cancelar no se hacen más cobros y sigues usando el sistema hasta el final del mes que ya pagaste.</p></div>
+      </details>
+      <details>
+        <summary>¿Cómo pago?</summary>
+        <div class="resp"><p>Con un cobro mensual automático a tu tarjeta débito o crédito (Visa, Mastercard o American Express) o con Nequi, a través de Wompi (Bancolombia). Nosotros nunca vemos ni guardamos los datos de tu tarjeta.</p></div>
+      </details>
+      <details>
+        <summary>¿Qué pasa al terminar la prueba?</summary>
+        <div class="resp">
+          <p>Si registraste tu método de pago, el primer cobro se hace al terminar los 8 días y todo sigue igual.</p>
+          <p>Si no, el sistema se pausa desde las 10 de la mañana del día siguiente hasta que pagues. Tu información no se borra: al pagar, sigues donde ibas.</p>
+        </div>
+      </details>
+      <details>
+        <summary>¿Mis datos están seguros?</summary>
+        <div class="resp">
+          <p>Sí. Cada persona de tu equipo entra con su propio usuario y clave, y solo ve lo que su perfil permite. Las claves se guardan protegidas y la información se guarda en la infraestructura de Google.</p>
+          <p>Tu información es tuya: no la vendemos ni la compartimos. Lee la <a href="privacidad/">política de privacidad</a>.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="seccion gris" id="contacto">
+  <div class="envoltura">
+    <div class="cabeza">
+      <span class="etiqueta">Contáctanos</span>
+      <h2>Hablemos de tu negocio</h2>
+      <p>Cuéntanos qué necesitas y te respondemos en menos de 24 horas.</p>
+    </div>
+    <div class="contacto">
+      <div class="caja">
+        <form class="form" data-formulario="CONTACTO" novalidate>
+          <div class="fila">
+            <div class="campo"><label for="c-nombre">Tu nombre</label><input id="c-nombre" name="nombre" autocomplete="name" required maxlength="80"></div>
+            <div class="campo"><label for="c-negocio">Nombre del negocio</label><input id="c-negocio" name="negocio" autocomplete="organization" required maxlength="80"></div>
+          </div>
+          <div class="fila">
+            <div class="campo"><label for="c-pais">País</label><select id="c-pais" name="pais" data-paises></select></div>
+            <div class="campo"><label for="c-ciudad">Ciudad</label><input id="c-ciudad" name="ciudad" autocomplete="address-level2" required maxlength="60"></div>
+          </div>
+          <div class="campo" data-otro-pais hidden><label for="c-pais-otro">¿Cuál país?</label><input id="c-pais-otro" name="pais_otro" maxlength="60"></div>
+          <div class="fila">
+            <div class="campo"><span class="rotulo" id="c-tel-r">Teléfono / WhatsApp</span>
+              <div class="telefono"><select name="indicativo" aria-label="Indicativo del país"></select><input id="c-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" aria-labelledby="c-tel-r"></div></div>
+            <div class="campo"><label for="c-correo">Correo</label><input id="c-correo" name="correo" type="email" autocomplete="email" required maxlength="120"></div>
+          </div>
+          <div class="campo"><label for="c-mensaje">Mensaje</label><textarea id="c-mensaje" name="mensaje" required maxlength="1500"></textarea></div>
+          <div class="trampa" aria-hidden="true"><label for="c-web">No llenes este campo</label><input id="c-web" name="sitio_web" tabindex="-1" autocomplete="off"></div>
+          <label class="autoriza" for="c-autoriza"><input id="c-autoriza" type="checkbox" name="autoriza" required>
+            <span>Autorizo a S2 Solutions a usar estos datos para responder mi mensaje, según la <a href="privacidad/" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+          <div class="estado" hidden role="alert"></div>
+          <button class="btn btn-azul" type="submit">Enviar mensaje</button>
+        </form>
+        <div class="listo" hidden tabindex="-1">
+          <span class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Recibimos tu mensaje</h3>
+          <p>Te responderemos en menos de 24 horas.</p>
+        </div>
+      </div>
+      <div class="canales">
+        <a class="canal" href="https://wa.me/573234924680?text=Hola%2C%20quiero%20conocer%20el%20sistema%20de%20S2%20Solutions%20para%20mi%20negocio" target="_blank" rel="noopener">
+          <span class="icono"><svg width="22" height="22" viewBox="0 0 24 24" fill="#20C7D9" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.6-.1 1.3z"/></svg></span>
+          <span><b>WhatsApp</b><span>+57 323 492 4680</span></span>
+        </a>
+        <a class="canal" href="mailto:s2solutions.tech@gmail.com">
+          <span class="icono"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20C7D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+          <span><b>Correo</b><span>s2solutions.tech@gmail.com</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pie">
+  <div class="envoltura">
+    <div class="cols">
+      <div>
+        <a class="marca" href="./">S2 Solutions</a>
+        <p>POS y música con QR para bares, restaurantes, licoreras, tiendas y más.</p>
+        <p>Tecnología · Estrategia · Soluciones reales</p>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <ul>
+          <li><a href="https://wa.me/573234924680" target="_blank" rel="noopener">WhatsApp +57 323 492 4680</a></li>
+          <li><a href="mailto:s2solutions.tech@gmail.com">s2solutions.tech@gmail.com</a></li>
+        </ul>
+        <div id="redes"><h3 style="margin-top:18px">Redes sociales</h3><ul id="redes-lista"><li class="pendiente redes-pendientes">Espacio para las redes</li></ul></div>
+      </div>
+      <div>
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="privacidad/">Política de privacidad</a></li>
+          <li><a href="terminos/">Términos y condiciones</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base"><span>© 2026 S2 Solutions · Colombia</span><span>Precios en pesos colombianos (COP)</span></div>
+  </div>
+</footer>
+
+<a class="whatsapp" href="https://wa.me/573234924680?text=Hola%2C%20quiero%20conocer%20el%20sistema%20de%20S2%20Solutions%20para%20mi%20negocio" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.6-.1 1.3z"/></svg>
+  <span>Escríbenos</span>
+</a>
+
+<dialog class="ventana" id="ventana-plan" aria-labelledby="plan-titulo">
+  <div class="cab"><h2 id="plan-titulo">Elegir plan</h2><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">×</button></div>
+  <div class="cuerpo">
+    <form class="form" data-formulario="SOLICITUD" novalidate>
+      <div class="campo"><label for="s-plan">Plan</label>
+        <select id="s-plan" name="plan">
+          <option value="MUSICA">Música · $49.000 COP / mes</option>
+          <option value="POS">POS · $79.000 COP / mes</option>
+          <option value="COMPLETO" selected>Completo · $109.000 COP / mes (recomendado)</option>
+        </select></div>
+      <label class="autoriza" for="s-adicional" data-adicional hidden><input id="s-adicional" type="checkbox" name="facturacion">
+        <span>Agregar facturación electrónica (+ $30.000 COP / mes)</span></label>
+      <div class="fila">
+        <div class="campo"><label for="s-negocio">Nombre del negocio</label><input id="s-negocio" name="negocio" autocomplete="organization" required maxlength="80"></div>
+        <div class="campo"><label for="s-nombre">Nombre de contacto</label><input id="s-nombre" name="nombre" autocomplete="name" required maxlength="80"></div>
+      </div>
+      <div class="fila">
+        <div class="campo"><label for="s-pais">País</label><select id="s-pais" name="pais" data-paises></select></div>
+        <div class="campo"><label for="s-ciudad">Ciudad</label><input id="s-ciudad" name="ciudad" autocomplete="address-level2" required maxlength="60"></div>
+      </div>
+      <div class="campo" data-otro-pais hidden><label for="s-pais-otro">¿Cuál país?</label><input id="s-pais-otro" name="pais_otro" maxlength="60"></div>
+      <div class="fila">
+        <div class="campo"><span class="rotulo" id="s-tel-r">Teléfono / WhatsApp</span>
+          <div class="telefono"><select name="indicativo" aria-label="Indicativo del país"></select><input id="s-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" aria-labelledby="s-tel-r"></div></div>
+        <div class="campo"><label for="s-correo">Correo</label><input id="s-correo" name="correo" type="email" autocomplete="email" required maxlength="120"></div>
+      </div>
+      <div class="campo"><span class="rotulo">¿Cómo quieres empezar?</span>
+        <div class="opciones">
+          <label class="opcion" for="s-prueba"><input id="s-prueba" type="radio" name="inicio" value="PRUEBA" checked><b>Prueba gratis 8 días</b><span>Sin tarjeta. Pagas solo si te quedas.</span></label>
+          <label class="opcion" for="s-pagar"><input id="s-pagar" type="radio" name="inicio" value="PAGAR"><b>Pagar de una vez</b><span>Te enviamos el enlace de pago al activar tu cuenta.</span></label>
+        </div></div>
+      <div class="trampa" aria-hidden="true"><label for="s-web">No llenes este campo</label><input id="s-web" name="sitio_web" tabindex="-1" autocomplete="off"></div>
+      <label class="autoriza" for="s-autoriza"><input id="s-autoriza" type="checkbox" name="autoriza" required>
+        <span>Autorizo a S2 Solutions a usar estos datos para contactarme y activar mi cuenta, según la <a href="privacidad/" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+      <div class="estado" hidden role="alert"></div>
+      <button class="btn btn-azul" type="submit">Enviar solicitud</button>
+    </form>
+    <div class="listo" hidden tabindex="-1">
+      <span class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      <h3>¡Listo!</h3>
+      <p>Recibimos tu solicitud. Te contactaremos en menos de 24 horas para activar tu cuenta.</p>
+      <button class="btn btn-borde-claro" type="button" data-cerrar>Cerrar</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="ventana" id="ventana-sesion" aria-labelledby="sesion-titulo">
+  <div class="cab"><h2 id="sesion-titulo">Iniciar sesión</h2><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">×</button></div>
+  <div class="cuerpo">
+    <p>Entra desde el enlace de tu negocio que te enviamos al activar tu cuenta (guárdalo como acceso directo en tu celular o tu computador).</p>
+    <p>¿No lo encuentras? Escríbenos y te lo enviamos de nuevo.</p>
+    <div class="acciones"><a class="btn btn-azul" href="https://wa.me/573234924680?text=Hola%2C%20necesito%20el%20enlace%20para%20entrar%20a%20mi%20sistema" target="_blank" rel="noopener">Pedir mi enlace por WhatsApp</a></div>
+  </div>
+</dialog>
+
+<script src="recursos/web.js"></script>
 </body>
 </html>
