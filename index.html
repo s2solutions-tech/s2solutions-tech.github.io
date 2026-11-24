@@ -39,7 +39,7 @@
         <a class="link" href="#planes">Planes</a>
         <a class="link" href="#preguntas">Preguntas</a>
         <a class="link" href="#contacto">Contacto</a>
-        <a class="btn btn-borde btn-chico" href="#" data-abrir-sesion>Iniciar sesión</a>
+        <a class="btn btn-borde btn-chico" href="#principal" data-abrir-sesion hidden>Iniciar sesión</a>
       </nav>
     </div>
 
@@ -107,7 +107,7 @@
       <div class="paso"><span class="num"><b>2</b>Pide</span><h3>Pide su canción o su karaoke</h3><p>Busca la canción, la ve entrar a la cola y sabe cuántas faltan. Si necesita algo, llama al personal o pide la cuenta.</p><span class="flecha"></span></div>
       <div class="paso"><span class="num"><b>3</b>Suena</span><h3>Suena en tu local</h3><p>La cola avanza sola en el computador que pone la música. Tú decides qué se aprueba y cuántas canciones puede pedir cada mesa.</p></div>
     </div>
-    <div class="video" id="video">
+    <div class="video" id="video" hidden>
       <button type="button" aria-label="Ver el video de S2 Solutions">
         <span class="play">
           <span><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="#fff"/></svg></span>
@@ -214,7 +214,7 @@
         </ul>
         <div class="nota"><b>¿Ya tienes sistema de cobro?</b> Usa solo el plan Música.</div>
         <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
-        <a class="btn btn-borde-claro" href="#" data-abrir-plan="MUSICA">Elegir plan</a>
+        <a class="btn btn-borde-claro" href="#contacto" data-abrir-plan="MUSICA">Elegir plan</a>
       </div>
       <div class="plan">
         <h3>POS</h3>
@@ -234,7 +234,7 @@
           <li>Impresión de tiquetes</li>
         </ul>
         <div class="nota" data-factura><b>Facturación electrónica:</b> <span data-precio-adicional="facturacion">…</span></div>
-        <a class="btn btn-borde-claro" href="#" data-abrir-plan="POS">Elegir plan</a>
+        <a class="btn btn-borde-claro" href="#contacto" data-abrir-plan="POS">Elegir plan</a>
       </div>
       <div class="plan recomendado">
         <span class="sello">Recomendado</span>
@@ -248,14 +248,14 @@
           <li>Soporte personalizado por WhatsApp</li>
         </ul>
         <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
-        <a class="btn btn-azul" href="#" data-abrir-plan="COMPLETO">Elegir plan</a>
+        <a class="btn btn-azul" href="#contacto" data-abrir-plan="COMPLETO">Elegir plan</a>
       </div>
     </div>
     <div class="extra"><span><b>Música en YouTube</b> en los planes Música y Completo; <b>Spotify</b> es un adicional (con la cuenta Premium de tu negocio).</span><span data-factura><b>Documentos adicionales:</b> se cotizan.</span><span><b>Soporte personalizado</b> por WhatsApp en todos los planes.</span></div>
   </div>
 </section>
 
-<section class="seccion gris" id="testimonios" data-testimonios>
+<section class="seccion gris" id="testimonios" data-testimonios hidden>
   <div class="envoltura">
     <div class="cabeza">
       <span class="etiqueta">Testimonios</span>
@@ -394,7 +394,7 @@
           <li><a href="https://wa.me/573234924680" target="_blank" rel="noopener">WhatsApp +57 323 492 4680</a></li>
           <li><!--email_off--><a href="mailto:s2solutions.tech@gmail.com">s2solutions.tech@gmail.com</a><!--/email_off--></li>
         </ul>
-        <div id="redes"><h3 style="margin-top:18px">Redes sociales</h3><ul id="redes-lista"><li class="pendiente redes-pendientes">Espacio para las redes</li></ul></div>
+        <div id="redes"><h3 style="margin-top:18px">Redes sociales</h3><ul id="redes-lista"><li><a href="https://www.instagram.com/s2solutions.co/" target="_blank" rel="noopener">Instagram</a></li></ul></div>
       </div>
       <div>
         <h3>Legal</h3>

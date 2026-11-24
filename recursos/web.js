@@ -8,7 +8,8 @@
     MOSTRAR_FACTURACION: true,      // false = la facturación electrónica se oculta en toda la web (portada, módulos, planes, preguntas)
     VIDEO_YOUTUBE: '',              // enlace o ID del video de YouTube; vacío = la sección no muestra video
     MOSTRAR_TESTIMONIOS: false,     // true cuando haya testimonios con permiso escrito del cliente
-    REDES: [],                      // ej. [{ nombre: 'Instagram', url: 'https://instagram.com/…' }]
+    REDES: [{ nombre: 'Instagram', url: 'https://www.instagram.com/s2solutions.co/' }],   // las del pie (Facebook, TikTok…: agregarlas aquí y en index.html)
+    MOSTRAR_INGRESO: false,         // true cuando esté la parte 2 del ingreso (ingresar.s2solutions.app): vuelve «Iniciar sesión» arriba
     WHATSAPP: '573234924680'
   };
   window.S2_AJUSTES = S2;
@@ -23,6 +24,7 @@
     $$('[data-sin-factura]').forEach(el => { el.hidden = opc.factura; });
     const ademas = $('#ademas'); if (ademas) ademas.classList.toggle('dos', !opc.factura);
     $$('[data-testimonios]').forEach(el => { el.hidden = !opc.testimonios; });
+    $$('[data-abrir-sesion]').forEach(el => { el.hidden = !S2.MOSTRAR_INGRESO; });
     const v = $('#video'); if (v) v.hidden = !opc.video;
     const r = $('#redes'); if (r) r.hidden = !opc.redes;
   }
@@ -31,7 +33,7 @@
     const m = /(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(t);
     return m ? m[1] : /^[\w-]{11}$/.test(t) ? t : '';
   })();
-  const estado = { factura: S2.MOSTRAR_FACTURACION, testimonios: S2.MOSTRAR_TESTIMONIOS || previa, video: !!idVideo || previa, redes: S2.REDES.length > 0 || previa };
+  const estado = { factura: S2.MOSTRAR_FACTURACION, testimonios: !!S2.MOSTRAR_TESTIMONIOS, video: !!idVideo, redes: S2.REDES.length > 0 };
   aplicar(estado);
 
   if (previa) {   // franja solo en el computador de S2 (no aparece en github.io, pages.dev ni el dominio)
