@@ -67,7 +67,11 @@ h1, h2, h3 { font-family: var(--titulos); text-wrap: balance; margin: 0; }
 .barra-sup { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
 .marca { display: flex; align-items: center; gap: 10px; color: var(--blanco); text-decoration: none; font-family: var(--titulos); font-weight: 700; font-size: 19px; }
 .marca small { display: block; font-family: var(--texto); font-weight: 500; font-size: 11px; color: var(--texto-2-osc); letter-spacing: .06em; }
-.marca svg { flex: none; }
+.marca svg, .marca img { flex: none; display: block; }
+.marca img { height: 40px; width: auto; }
+.marca-pie { display: inline-block; margin-bottom: 8px; }
+.marca-pie img { display: block; height: 120px; width: auto; }
+@media (max-width: 440px) { .marca img { height: 34px; } }
 .nav { display: flex; align-items: center; gap: 22px; }
 .nav a.link { color: var(--texto-2-osc); text-decoration: none; font-size: 15px; font-weight: 500; }
 .nav a.link:hover { color: var(--blanco); }
