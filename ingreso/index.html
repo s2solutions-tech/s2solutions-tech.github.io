@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ingresar · S2 Solutions</title>
+  <meta name="description" content="Entra al sistema de tu negocio con tu correo.">
+  <meta name="theme-color" content="#111318">
+  <meta name="robots" content="noindex">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icono.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icono-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="S2 Ingreso">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+  <style>
+    /* Página de ingreso con correo (autocontenida: se publica también sola en app.<dominio>). Marca de la web de S2 Solutions. */
+    :root { color-scheme: light; --graphite: #111318; --azul: #1769FF; --azul-claro: #6FA0FF; --cian: #20C7D9; --gris: #E9EDF2; --blanco: #FFFFFF;
+            --texto-2: #5B6472; --texto-2-osc: #A9B3C1; --borde: #D7DDE5; --error: #B42318;
+            --titulos: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif; --texto: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--graphite); color: var(--graphite); font-family: var(--texto); font-size: 16px; line-height: 1.5;
+           display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+           background-image: linear-gradient(rgba(233,237,242,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(233,237,242,.06) 1px, transparent 1px); background-size: 48px 48px; }
+    [hidden] { display: none !important; }
+    .caja { width: min(420px, 100%); background: var(--blanco); border-radius: 20px; padding: 28px 24px 24px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); display: grid; gap: 16px; }
+    .marca { display: flex; align-items: center; gap: 10px; font: 700 19px var(--titulos); }
+    h1 { font: 700 26px/1.15 var(--titulos); margin: 4px 0 0; letter-spacing: -.01em; }
+    p { margin: 0; color: var(--texto-2); }
+    label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 6px; }
+    input[type=email] { width: 100%; font: 16px var(--texto); border: 1.5px solid var(--borde); border-radius: 12px; padding: 12px 14px; min-height: 48px; }
+    input[type=email]:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(23,105,255,.18); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; border-radius: 12px; border: 1.5px solid transparent;
+           font: 600 16px var(--texto); cursor: pointer; text-decoration: none; }
+    .btn-azul { background: var(--azul); color: #fff; } .btn-azul:hover { background: #0F5AE6; } .btn-azul[disabled] { opacity: .6; cursor: default; }
+    .btn-borde { background: #fff; color: var(--azul); border-color: var(--azul); }
+    .enlace { background: none; border: 0; color: var(--azul); font: 500 14px var(--texto); cursor: pointer; padding: 0; text-decoration: underline; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--cian); outline-offset: 2px; }
+    .estado { font-size: 15px; border-radius: 12px; padding: 12px 14px; background: #FEF3F2; color: var(--error); }
+    .lista { display: grid; gap: 8px; }
+    .pie { font-size: 13px; color: var(--texto-2); text-align: center; }
+    .pie a { color: var(--azul); }
+    #marco { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+  </style>
+</head>
+<body>
+<main class="caja" id="caja">
+  <div class="marca">
+    <svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1769FF"/><stop offset="1" stop-color="#20C7D9"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="#111318"/><rect x="14" y="32" width="9" height="20" rx="4.5" fill="url(#g)"/><rect x="27.5" y="21" width="9" height="31" rx="4.5" fill="url(#g)"/><rect x="41" y="11" width="9" height="41" rx="4.5" fill="url(#g)"/></svg>
+    S2 Solutions
+  </div>
+
+  <section id="recordado" hidden>
+    <h1>Hola de nuevo</h1>
+    <p id="recordado-texto"></p>
+    <div style="display:grid;gap:10px;margin-top:16px;">
+      <button class="btn btn-azul" id="btn-recordado" type="button"></button>
+      <button class="enlace" type="button" id="btn-otro">Entrar con otro correo</button>
+    </div>
+  </section>
+
+  <section id="paso-correo">
+    <h1>Entra a tu negocio</h1>
+    <p>Escribe tu correo y te llevamos a la pantalla de ingreso de tu negocio.</p>
+    <form id="form" novalidate style="display:grid;gap:14px;margin-top:14px;">
+      <div><label for="correo">Correo</label><input type="email" id="correo" name="correo" autocomplete="email" inputmode="email" required maxlength="120" placeholder="nombre@correo.com"></div>
+      <div id="turnstile"></div>
+      <div class="estado" id="estado" role="alert" hidden></div>
+      <button class="btn btn-azul" type="submit" id="btn-seguir">Continuar</button>
+    </form>
+  </section>
+
+  <section id="paso-lista" hidden>
+    <h1>Elige tu negocio</h1>
+    <p>Tu correo está en varios negocios.</p>
+    <div class="lista" id="lista" style="margin-top:14px;"></div>
+    <button class="enlace" type="button" id="btn-volver" style="margin-top:10px;">Usar otro correo</button>
+  </section>
+
+  <div class="pie">¿No tienes cuenta? <a href="https://wa.me/573234924680" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+</main>
+<iframe id="marco" title="Tu negocio" allow="clipboard-write; autoplay" hidden></iframe>
+
+<script>
+(function () {
+  'use strict';
+  // ═══ AJUSTES ═══
+  const DIRECTORIO = 'https://script.google.com/macros/s/AKfycbwByncXAGokYD7qF9MSEDvGFdKUpmHQJ6n5Hign4fZoP5wHrdAijHPOc0ncErXhlLxA/exec';   // «SGB - Web»
+  const TURNSTILE_SITEKEY = '1x00000000000000000000AA';   // llave de PRUEBA de Turnstile (siempre pasa): poner la real antes de publicar
+  const GUARDADO = 'sgb_ingreso';
+
+  const $ = id => document.getElementById(id);
+  const leer = () => { try { return JSON.parse(localStorage.getItem(GUARDADO) || 'null'); } catch (e) { return null; } };
+  const guardar = v => { try { localStorage.setItem(GUARDADO, JSON.stringify(v)); } catch (e) {} };
+  const valido = c => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
+  let widget = null;
+
+  function mostrar(seccion) { ['recordado', 'paso-correo', 'paso-lista'].forEach(s => { $(s).hidden = s !== seccion; }); }
+  function error(t) { $('estado').textContent = t; $('estado').hidden = !t; }
+  /** Abre la pantalla de ingreso del negocio, con el correo escrito (la app pide solo la clave). */
+  function abrir(neg, correo) {
+    guardar({ nombre: neg.nombre, url: neg.url, correo });
+    $('caja').hidden = true;
+    const m = $('marco');
+    m.src = neg.url + (neg.url.indexOf('?') === -1 ? '?' : '&') + 'correo=' + encodeURIComponent(correo);
+    m.hidden = false;
+    document.title = neg.nombre + ' · S2 Solutions';
+  }
+  function cargarTurnstile() {
+    if (widget !== null || !window.turnstile) return;
+    widget = window.turnstile.render('#turnstile', { sitekey: TURNSTILE_SITEKEY, language: 'es', theme: 'light' });
+  }
+  window.alCargarTurnstile = cargarTurnstile;
+
+  $('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    error('');
+    const correo = $('correo').value.trim().toLowerCase();
+    if (!valido(correo)) { error('Revisa el correo: debe ser como nombre@correo.com.'); $('correo').focus(); return; }
+    const token = window.turnstile && widget !== null ? window.turnstile.getResponse(widget) : '';
+    if (!token) { error('Espera un momento a que se verifique que no eres un robot y vuelve a tocar «Continuar».'); return; }
+    const b = $('btn-seguir'); b.disabled = true; b.textContent = 'Buscando…';
+    try {
+      const r = await (await fetch(DIRECTORIO, { method: 'POST', body: JSON.stringify({ tipo: 'BUSCAR', correo, turnstile: token }) })).json();
+      if (!r.ok) { error(r.mensaje || 'No se pudo buscar. Inténtalo otra vez.'); return; }
+      const l = r.negocios || [];
+      if (!l.length) { error('No encontramos tu negocio con ese correo. Revisa que esté bien escrito o pídele al administrador de tu negocio que lo agregue en 👥 Usuarios.'); return; }
+      if (l.length === 1) { abrir(l[0], correo); return; }
+      $('lista').innerHTML = '';
+      l.forEach(n => {
+        const x = document.createElement('button');
+        x.type = 'button'; x.className = 'btn btn-borde'; x.textContent = n.nombre;
+        x.onclick = () => abrir(n, correo);
+        $('lista').appendChild(x);
+      });
+      mostrar('paso-lista');
+    } catch (err) {
+      error('No pudimos conectarnos. Revisa tu internet e inténtalo otra vez.');
+    } finally {
+      b.disabled = false; b.textContent = 'Continuar';
+      if (window.turnstile && widget !== null) try { window.turnstile.reset(widget); } catch (e) {}
+    }
+  });
+  $('btn-volver').onclick = () => { mostrar('paso-correo'); $('correo').focus(); };
+  $('btn-otro').onclick = () => { mostrar('paso-correo'); $('correo').focus(); };
+
+  // Acceso directo: si ya entró antes en este equipo, un toque y está en su negocio
+  const r = leer();
+  if (r && r.url && r.nombre) {
+    $('recordado-texto').textContent = 'La última vez entraste a ' + r.nombre + (r.correo ? ' con ' + r.correo : '') + '.';
+    $('btn-recordado').textContent = 'Entrar a ' + r.nombre;
+    $('btn-recordado').onclick = () => abrir(r, r.correo || '');
+    mostrar('recordado');
+  }
+  if (r && r.correo) $('correo').value = r.correo;
+  cargarTurnstile();
+})();
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=alCargarTurnstile&render=explicit" async defer></script>
+</body>
+</html>
