@@ -48,6 +48,21 @@
     ct.addEventListener('change', () => { estado.testimonios = ct.checked; aplicar(estado); });
   }
 
+  // ── Precios: salen de la pestaña «Ajustes» de la hoja «SGB - Web» (un solo lugar; se cambian ahí, sin tocar la página) ──
+  const pesos = n => '$' + Number(n).toLocaleString('es-CO');
+  function pintarPrecios(p) {
+    p = p || {};
+    $$('[data-precio]').forEach(el => { const v = p[el.dataset.precio]; el.textContent = v ? pesos(v) : 'Consúltanos'; });
+    $$('[data-precio-adicional]').forEach(el => { const v = p[el.dataset.precioAdicional]; el.textContent = v ? '+ ' + pesos(v) + ' COP / mes' : 'precio a consultar'; });
+    $$('option[data-precio-opcion]').forEach(o => {
+      const v = p[o.dataset.precioOpcion], base = o.textContent.split(' · ')[0].replace(/ \(recomendado\)$/, '');
+      o.textContent = base + (v ? ' · ' + pesos(v) + ' COP / mes' : '') + (o.value === 'COMPLETO' ? ' (recomendado)' : '');
+    });
+  }
+  pintarPrecios(null);
+  if (S2.URL_FORMULARIOS)
+    fetch(S2.URL_FORMULARIOS + '?ajustes=1').then(r => r.json()).then(r => { if (r && r.ok) pintarPrecios(r.precios); }).catch(() => {});
+
   // Redes sociales del pie
   const redes = $('#redes-lista');
   if (redes && S2.REDES.length) redes.innerHTML = S2.REDES.map(r => '<li><a href="' + encodeURI(r.url) + '" target="_blank" rel="noopener">' +
@@ -182,8 +197,12 @@
     }));
     $$('[data-cerrar]', ventana).forEach(b => b.addEventListener('click', () => ventana.close()));
     ventana.addEventListener('click', e => { if (e.target === ventana) ventana.close(); });
-    const plan = form.elements.plan, adicional = $('[data-adicional]', form);
-    const verAdicional = () => { if (adicional) adicional.hidden = plan.value !== 'POS' || !estado.factura; };
+    const plan = form.elements.plan, adicional = $('[data-adicional]', form), conSpotify = $('[data-con-spotify]', form);
+    const verAdicional = () => {
+      if (adicional) adicional.hidden = plan.value !== 'POS' || !estado.factura;
+      // Spotify (adicional) solo con los planes que tienen música; con el POS no se manda
+      if (conSpotify) { conSpotify.hidden = plan.value === 'POS'; if (conSpotify.hidden) form.elements.spotify.checked = false; }
+    };
     plan.addEventListener('change', verAdicional); ventana.addEventListener('focusin', verAdicional, { once: false });
   }
   const sesion = $('#ventana-sesion');

@@ -201,10 +201,10 @@
       <div class="plan">
         <h3>Música</h3>
         <p class="para">El QR en las mesas, para negocios con ambiente que ya tienen con qué cobrar.</p>
-        <div class="precio"><b>$49.000</b><small>COP / mes</small></div>
+        <div class="precio"><b data-precio="musica">…</b><small>COP / mes</small></div>
         <ul>
           <li>QR por mesa o por zona</li>
-          <li>Pedir canciones (YouTube o Spotify)</li>
+          <li>Pedir canciones (YouTube; Spotify como adicional)</li>
           <li>Karaoke</li>
           <li>Aprobar canciones antes de que entren a la cola</li>
           <li>Llamar al personal</li>
@@ -213,12 +213,13 @@
           <li>Decoraciones de temporada</li>
         </ul>
         <div class="nota"><b>¿Ya tienes sistema de cobro?</b> Usa solo el plan Música.</div>
+        <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
         <a class="btn btn-borde-claro" href="#" data-abrir-plan="MUSICA">Elegir plan</a>
       </div>
       <div class="plan">
         <h3>POS</h3>
         <p class="para">Para cobrar y llevar tu negocio en orden.</p>
-        <div class="precio"><b>$79.000</b><small>COP / mes</small></div>
+        <div class="precio"><b data-precio="pos">…</b><small>COP / mes</small></div>
         <ul>
           <li>Cuentas por mesa y zona</li>
           <li>Venta directa</li>
@@ -232,24 +233,25 @@
           <li>Usuarios y permisos</li>
           <li>Impresión de tiquetes</li>
         </ul>
-        <div class="nota" data-factura><b>Facturación electrónica:</b> + $30.000 COP / mes</div>
+        <div class="nota" data-factura><b>Facturación electrónica:</b> <span data-precio-adicional="facturacion">…</span></div>
         <a class="btn btn-borde-claro" href="#" data-abrir-plan="POS">Elegir plan</a>
       </div>
       <div class="plan recomendado">
         <span class="sello">Recomendado</span>
         <h3>Completo</h3>
         <p class="para">POS y música en un solo sistema<span data-factura>, con facturación electrónica</span>.</p>
-        <div class="precio"><b>$109.000</b><small>COP / mes</small></div>
+        <div class="precio"><b data-precio="completo">…</b><small>COP / mes</small></div>
         <ul>
           <li class="todo">Todo el plan POS</li>
           <li class="todo">Todo el plan Música</li>
           <li data-factura>Facturación electrónica DIAN, hasta 500 documentos al mes</li>
           <li>Soporte personalizado por WhatsApp</li>
         </ul>
+        <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
         <a class="btn btn-azul" href="#" data-abrir-plan="COMPLETO">Elegir plan</a>
       </div>
     </div>
-    <div class="extra"><span data-factura><b>Documentos adicionales:</b> se cotizan.</span><span><b>Soporte personalizado</b> por WhatsApp en todos los planes.</span></div>
+    <div class="extra"><span><b>Música en YouTube</b> en los planes Música y Completo; <b>Spotify</b> es un adicional (con la cuenta Premium de tu negocio).</span><span data-factura><b>Documentos adicionales:</b> se cotizan.</span><span><b>Soporte personalizado</b> por WhatsApp en todos los planes.</span></div>
   </div>
 </section>
 
@@ -417,12 +419,14 @@
     <form class="form" data-formulario="SOLICITUD" novalidate>
       <div class="campo"><label for="s-plan">Plan</label>
         <select id="s-plan" name="plan">
-          <option value="MUSICA">Música · $49.000 COP / mes</option>
-          <option value="POS">POS · $79.000 COP / mes</option>
-          <option value="COMPLETO" selected>Completo · $109.000 COP / mes (recomendado)</option>
+          <option value="MUSICA" data-precio-opcion="musica">Música</option>
+          <option value="POS" data-precio-opcion="pos">POS</option>
+          <option value="COMPLETO" data-precio-opcion="completo" selected>Completo (recomendado)</option>
         </select></div>
       <label class="autoriza" for="s-adicional" data-adicional hidden><input id="s-adicional" type="checkbox" name="facturacion">
-        <span>Agregar facturación electrónica (+ $30.000 COP / mes)</span></label>
+        <span>Agregar facturación electrónica (<span data-precio-adicional="facturacion">…</span>)</span></label>
+      <label class="autoriza" for="s-spotify" data-con-spotify><input id="s-spotify" type="checkbox" name="spotify">
+        <span>Quiero Spotify (adicional: <span data-precio-adicional="spotify">…</span>). Necesitas una cuenta Premium de Spotify para tu negocio.</span></label>
       <div class="fila">
         <div class="campo"><label for="s-negocio">Nombre del negocio</label><input id="s-negocio" name="negocio" autocomplete="organization" required maxlength="80"></div>
         <div class="campo"><label for="s-nombre">Nombre de contacto</label><input id="s-nombre" name="nombre" autocomplete="name" required maxlength="80"></div>
