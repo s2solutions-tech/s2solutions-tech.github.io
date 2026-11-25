@@ -195,63 +195,82 @@
     <div class="cabeza">
       <span class="etiqueta">Planes</span>
       <h2>Elige cómo empezar</h2>
-      <p>Precios mensuales en pesos colombianos (COP). Prueba gratis 8 días, sin compromiso.</p>
+      <p>Precios en pesos colombianos (COP). Prueba gratis 8 días, sin compromiso.</p>
+    </div>
+    <div class="periodo">
+      <div class="selector" role="group" aria-label="Forma de pago">
+        <button type="button" data-periodo="MENSUAL" aria-pressed="true">Mensual</button>
+        <button type="button" data-periodo="ANUAL" aria-pressed="false">Anual</button>
+      </div>
+      <span class="ahorro" data-solo-anual hidden>Ahorra 2 meses<span data-factura> y el certificado digital va incluido</span></span>
     </div>
     <div class="planes">
       <div class="plan">
         <h3>Música</h3>
         <p class="para">El QR en las mesas, para negocios con ambiente que ya tienen con qué cobrar.</p>
-        <div class="precio"><b data-precio="musica">…</b><small>COP / mes</small></div>
+        <div class="precio"><b data-precio="musica">…</b><small data-por>COP / mes</small></div>
+        <p class="equivale" data-equivale="musica" hidden></p>
         <ul>
-          <li>QR por mesa o por zona</li>
-          <li>Pedir canciones (YouTube; Spotify como adicional)</li>
-          <li>Karaoke</li>
-          <li>Aprobar canciones antes de que entren a la cola</li>
+          <li>Música por QR (YouTube)</li>
+          <li>Pedidos de canciones desde la mesa</li>
           <li>Llamar al personal</li>
-          <li>Anuncios para los clientes</li>
-          <li>Concursos y votaciones</li>
-          <li>Decoraciones de temporada</li>
+          <li>Karaoke y concursos</li>
+          <li>Instalación y capacitación</li>
+          <li>Soporte por WhatsApp</li>
         </ul>
         <div class="nota"><b>¿Ya tienes sistema de cobro?</b> Usa solo el plan Música.</div>
-        <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
         <a class="btn btn-borde-claro" href="#contacto" data-abrir-plan="MUSICA">Elegir plan</a>
       </div>
       <div class="plan">
-        <h3>POS</h3>
-        <p class="para">Para cobrar y llevar tu negocio en orden.</p>
-        <div class="precio"><b data-precio="pos">…</b><small>COP / mes</small></div>
+        <h3>POS<span data-factura> + Facturación</span></h3>
+        <p class="para">Para cobrar<span data-factura>, facturar</span> y llevar tu negocio en orden.</p>
+        <div class="precio"><b data-precio="pos">…</b><small data-por>COP / mes</small></div>
+        <p class="equivale" data-equivale="pos" hidden></p>
         <ul>
-          <li>Cuentas por mesa y zona</li>
-          <li>Venta directa</li>
-          <li>Comandas a cocina y barra</li>
-          <li>Precuenta</li>
-          <li>Mover mesa</li>
-          <li>Cortesías</li>
-          <li>Propina</li>
-          <li>Recargo por datáfono</li>
-          <li>Inventario, gastos y balance</li>
-          <li>Usuarios y permisos</li>
-          <li>Impresión de tiquetes</li>
+          <li>POS: cuentas, mesas y zonas, caja, propina, reimprimir y usuarios</li>
+          <li data-factura><span>Facturación electrónica DIAN, hasta <span data-cupo-documentos>1.000</span> documentos al mes</span></li>
+          <li>Instalación y capacitación</li>
+          <li>Soporte por WhatsApp</li>
         </ul>
-        <div class="nota" data-factura><b>Facturación electrónica:</b> <span data-precio-adicional="facturacion">…</span></div>
+        <div class="nota" data-factura data-certificado></div>
         <a class="btn btn-borde-claro" href="#contacto" data-abrir-plan="POS">Elegir plan</a>
       </div>
       <div class="plan recomendado">
         <span class="sello">Recomendado</span>
         <h3>Completo</h3>
         <p class="para">POS y música en un solo sistema<span data-factura>, con facturación electrónica</span>.</p>
-        <div class="precio"><b data-precio="completo">…</b><small>COP / mes</small></div>
+        <div class="precio"><b data-precio="completo">…</b><small data-por>COP / mes</small></div>
+        <p class="equivale" data-equivale="completo" hidden></p>
         <ul>
-          <li class="todo">Todo el plan POS</li>
           <li class="todo">Todo el plan Música</li>
-          <li data-factura>Facturación electrónica DIAN, hasta 500 documentos al mes</li>
-          <li>Soporte personalizado por WhatsApp</li>
+          <li class="todo"><span>Todo el plan POS<span data-factura> + Facturación</span></span></li>
+          <li>Instalación y capacitación</li>
+          <li>Soporte por WhatsApp</li>
         </ul>
-        <div class="nota"><b>Spotify (adicional):</b> <span data-precio-adicional="spotify">…</span></div>
+        <div class="nota" data-factura data-certificado></div>
         <a class="btn btn-azul" href="#contacto" data-abrir-plan="COMPLETO">Elegir plan</a>
       </div>
     </div>
-    <div class="extra"><span><b>Música en YouTube</b> en los planes Música y Completo; <b>Spotify</b> es un adicional (con la cuenta Premium de tu negocio).</span><span data-factura><b>Documentos adicionales:</b> se cotizan.</span><span><b>Soporte personalizado</b> por WhatsApp en todos los planes.</span></div>
+    <p class="aclara" data-factura>Certificado digital y habilitación DIAN: <span data-precio-certificado>…</span> en los planes mensuales con facturación; incluido en los planes anuales. No aplica al plan Música.</p>
+
+    <h3 class="sub-adicionales">Adicionales</h3>
+    <div class="adicionales">
+      <div class="adicional">
+        <h4>Spotify</h4>
+        <div class="precio-adicional"><span data-precio-spotify>…</span></div>
+        <p>Solo con plan pagado, en los planes Música y Completo. Necesitas una cuenta Premium de Spotify para tu negocio.</p>
+      </div>
+      <div class="adicional" data-factura>
+        <h4>Documento electrónico extra</h4>
+        <div class="precio-adicional"><span data-precio-documento>…</span></div>
+        <p>Si pasas de <span data-cupo-documentos>1.000</span> documentos al mes, sigues facturando sin cortes.</p>
+      </div>
+      <div class="adicional" data-factura>
+        <h4>¿Ya usas Siigo?</h4>
+        <p>Conectamos tu Siigo y facturas desde ahí. Escríbenos.</p>
+        <a class="btn btn-borde-claro" href="https://wa.me/573234924680?text=Hola%2C%20ya%20uso%20Siigo%20y%20quiero%20conectarlo%20con%20S2%20Solutions" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -303,11 +322,23 @@
       </details>
       <details>
         <summary>¿Puedo cancelar cuando quiera?</summary>
-        <div class="resp"><p>Sí. No hay contratos de permanencia. Al cancelar no se hacen más cobros y sigues usando el sistema hasta el final del mes que ya pagaste.</p></div>
+        <div class="resp"><p>Sí. No hay contratos de permanencia. Al cancelar no se hacen más cobros y sigues usando el sistema hasta el final del periodo que ya pagaste (el mes o, en el plan anual, el año).</p></div>
       </details>
       <details>
         <summary>¿Cómo pago?</summary>
-        <div class="resp"><p>Con un cobro mensual automático a tu tarjeta débito o crédito (Visa, Mastercard o American Express) o con Nequi, a través de Wompi (Bancolombia). Nosotros nunca vemos ni guardamos los datos de tu tarjeta.</p></div>
+        <div class="resp"><p>En el plan mensual, con un cobro mensual automático a tu tarjeta débito o crédito (Visa, Mastercard o American Express) o con Nequi, a través de Wompi (Bancolombia). Nosotros nunca vemos ni guardamos los datos de tu tarjeta.</p><p>En el plan anual pagas una sola vez al año.</p></div>
+      </details>
+      <details>
+        <summary>¿Puedo cambiar de plan?</summary>
+        <div class="resp"><p>Sí, cuando quieras.</p></div>
+      </details>
+      <details data-factura>
+        <summary>¿Qué es el certificado digital?</summary>
+        <div class="resp"><p>Es la firma con la que tus facturas quedan válidas ante la DIAN. Lo tramitamos nosotros; tú solo haces una verificación de identidad.</p></div>
+      </details>
+      <details data-factura>
+        <summary>¿Qué pasa si paso de <span data-cupo-documentos>1.000</span> documentos al mes?</summary>
+        <div class="resp"><p>Sigues facturando sin cortes; cada documento adicional cuesta <span data-precio-documento-corto>…</span>.</p></div>
       </details>
       <details>
         <summary>¿Qué pasa al terminar la prueba?</summary>
@@ -420,13 +451,14 @@
       <div class="campo"><label for="s-plan">Plan</label>
         <select id="s-plan" name="plan">
           <option value="MUSICA" data-precio-opcion="musica">Música</option>
-          <option value="POS" data-precio-opcion="pos">POS</option>
+          <option value="POS" data-precio-opcion="pos">POS + Facturación</option>
           <option value="COMPLETO" data-precio-opcion="completo" selected>Completo (recomendado)</option>
         </select></div>
-      <label class="autoriza" for="s-adicional" data-adicional hidden><input id="s-adicional" type="checkbox" name="facturacion">
-        <span>Agregar facturación electrónica (<span data-precio-adicional="facturacion">…</span>)</span></label>
-      <label class="autoriza" for="s-spotify" data-con-spotify><input id="s-spotify" type="checkbox" name="spotify">
-        <span>Quiero Spotify (adicional: <span data-precio-adicional="spotify">…</span>). Necesitas una cuenta Premium de Spotify para tu negocio.</span></label>
+      <div class="campo"><span class="rotulo">Forma de pago</span>
+        <div class="opciones">
+          <label class="opcion" for="s-mensual"><input id="s-mensual" type="radio" name="periodo" value="MENSUAL" checked><b>Mensual</b><span data-opcion-periodo="MENSUAL">Pagas cada mes.</span></label>
+          <label class="opcion" for="s-anual"><input id="s-anual" type="radio" name="periodo" value="ANUAL"><b>Anual</b><span data-opcion-periodo="ANUAL">Ahorras 2 meses<span data-factura> y el certificado digital va incluido</span>.</span></label>
+        </div></div>
       <div class="fila">
         <div class="campo"><label for="s-negocio">Nombre del negocio</label><input id="s-negocio" name="negocio" autocomplete="organization" required maxlength="80"></div>
         <div class="campo"><label for="s-nombre">Nombre de contacto</label><input id="s-nombre" name="nombre" autocomplete="name" required maxlength="80"></div>
@@ -446,6 +478,8 @@
           <label class="opcion" for="s-prueba"><input id="s-prueba" type="radio" name="inicio" value="PRUEBA" checked><b>Prueba gratis 8 días</b><span>Sin tarjeta. Pagas solo si te quedas.</span></label>
           <label class="opcion" for="s-pagar"><input id="s-pagar" type="radio" name="inicio" value="PAGAR"><b>Pagar de una vez</b><span>Te enviamos el enlace de pago al activar tu cuenta.</span></label>
         </div></div>
+      <label class="autoriza" for="s-spotify" data-con-spotify hidden><input id="s-spotify" type="checkbox" name="spotify">
+        <span>Quiero Spotify (adicional: <span data-precio-spotify-form>…</span>). Necesitas una cuenta Premium de Spotify para tu negocio.</span></label>
       <div class="trampa" aria-hidden="true"><label for="s-web">No llenes este campo</label><input id="s-web" name="sitio_web" tabindex="-1" autocomplete="off"></div>
       <label class="autoriza" for="s-autoriza"><input id="s-autoriza" type="checkbox" name="autoriza" required>
         <span>Autorizo a S2 Solutions a usar estos datos para contactarme y activar mi cuenta, según la <a href="privacidad/" target="_blank" rel="noopener">política de privacidad</a>.</span></label>

@@ -19,6 +19,7 @@
   const previa = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === 'file:';
 
   // ── Facturación, testimonios, video y redes ──
+  let repintar = () => {};   // los precios (el nombre «POS + Facturación» depende de la facturación)
   function aplicar(opc) {
     $$('[data-factura]').forEach(el => { el.hidden = !opc.factura; });
     $$('[data-sin-factura]').forEach(el => { el.hidden = opc.factura; });
@@ -27,6 +28,7 @@
     $$('[data-abrir-sesion]').forEach(el => { el.hidden = !S2.MOSTRAR_INGRESO; });
     const v = $('#video'); if (v) v.hidden = !opc.video;
     const r = $('#redes'); if (r) r.hidden = !opc.redes;
+    repintar();
   }
   const idVideo = (() => {
     const t = String(S2.VIDEO_YOUTUBE || '').trim();
@@ -51,19 +53,46 @@
   }
 
   // ── Precios: salen de la pestaña «Ajustes» de la hoja «SGB - Web» (un solo lugar; se cambian ahí, sin tocar la página) ──
+  // Mensual / Anual: el selector de arriba de los planes (por defecto Mensual). El formulario tiene su propia «Forma de pago»
+  // (empieza con la que se estaba viendo al tocar «Elegir plan»).
   const pesos = n => '$' + Number(n).toLocaleString('es-CO');
-  function pintarPrecios(p) {
-    p = p || {};
-    $$('[data-precio]').forEach(el => { const v = p[el.dataset.precio]; el.textContent = v ? pesos(v) : 'Consúltanos'; });
-    $$('[data-precio-adicional]').forEach(el => { const v = p[el.dataset.precioAdicional]; el.textContent = v ? '+ ' + pesos(v) + ' COP / mes' : 'precio a consultar'; });
-    $$('option[data-precio-opcion]').forEach(o => {
-      const v = p[o.dataset.precioOpcion], base = o.textContent.split(' · ')[0].replace(/ \(recomendado\)$/, '');
-      o.textContent = base + (v ? ' · ' + pesos(v) + ' COP / mes' : '') + (o.value === 'COMPLETO' ? ' (recomendado)' : '');
+  const miles = n => Number(n).toLocaleString('es-CO');
+  let precios = {}, periodo = 'MENSUAL';
+  const NOMBRES = () => ({ MUSICA: 'Música', POS: estado.factura ? 'POS + Facturación' : 'POS', COMPLETO: 'Completo' });
+  const periodoForm = () => { const r = $('#ventana-plan input[name=periodo]:checked'); return r ? r.value : 'MENSUAL'; };
+  /** «$15.000 COP / mes» o «$150.000 COP / año» según el periodo; null si ese precio no está en «Ajustes». */
+  const precioDe = (clave, per) => { const v = precios[per === 'ANUAL' ? clave + '_anual' : clave]; return v ? pesos(v) + ' COP / ' + (per === 'ANUAL' ? 'año' : 'mes') : null; };
+  function pintarPrecios() {
+    const p = precios, anual = periodo === 'ANUAL';
+    $$('[data-periodo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.periodo === periodo)));
+    $$('[data-solo-anual]').forEach(el => { el.hidden = !anual; });
+    $$('[data-precio]').forEach(el => { const v = p[anual ? el.dataset.precio + '_anual' : el.dataset.precio]; el.textContent = v ? pesos(v) : 'Consúltanos'; });
+    $$('[data-por]').forEach(el => { el.textContent = anual ? 'COP / año' : 'COP / mes'; });
+    $$('[data-equivale]').forEach(el => {
+      const v = p[el.dataset.equivale + '_anual'];
+      el.hidden = !(anual && v); el.textContent = anual && v ? 'Equivale a ' + pesos(Math.round(v / 12)) + ' / mes' : '';
     });
+    const cert = p.certificado ? pesos(p.certificado) + ' COP / año' : 'precio a consultar';
+    $$('[data-certificado]').forEach(el => { el.innerHTML = '<b>Certificado digital y habilitación DIAN:</b> ' + (anual ? 'incluido' : '+ ' + cert); });
+    $$('[data-precio-certificado]').forEach(el => { el.textContent = cert; });
+    const sp = [precioDe('spotify', 'MENSUAL'), precioDe('spotify', 'ANUAL')].filter(Boolean);
+    $$('[data-precio-spotify]').forEach(el => { el.innerHTML = sp.length ? sp[0] + (sp[1] ? ' <small>o ' + sp[1] + '</small>' : '') : 'Precio a consultar'; });
+    $$('[data-precio-documento]').forEach(el => { el.textContent = p.documento_extra ? pesos(p.documento_extra) + ' COP c/u' : 'Precio a consultar'; });
+    $$('[data-precio-documento-corto]').forEach(el => { el.textContent = p.documento_extra ? pesos(p.documento_extra) : 'un valor adicional (consúltanos)'; });
+    if (p.documentos_mes) $$('[data-cupo-documentos]').forEach(el => { el.textContent = miles(p.documentos_mes); });
+    // Formulario: nombre del plan y su precio en la forma de pago elegida ahí
+    const pf = periodoForm(), n = NOMBRES();
+    $$('option[data-precio-opcion]').forEach(o => {
+      const v = precios[pf === 'ANUAL' ? o.dataset.precioOpcion + '_anual' : o.dataset.precioOpcion];   // corto: cabe en el celular
+      o.textContent = n[o.value] + (v ? ' · ' + pesos(v) + (pf === 'ANUAL' ? ' / año' : ' / mes') : (o.value === 'COMPLETO' ? ' (recomendado)' : ''));
+    });
+    $$('[data-precio-spotify-form]').forEach(el => { const v = precioDe('spotify', pf); el.textContent = v ? '+ ' + v : 'precio a consultar'; });
   }
-  pintarPrecios(null);
+  repintar = pintarPrecios;
+  pintarPrecios();
+  $$('[data-periodo]').forEach(b => b.addEventListener('click', () => { periodo = b.dataset.periodo; pintarPrecios(); }));
   if (S2.URL_FORMULARIOS)
-    fetch(S2.URL_FORMULARIOS + '?ajustes=1').then(r => r.json()).then(r => { if (r && r.ok) pintarPrecios(r.precios); }).catch(() => {});
+    fetch(S2.URL_FORMULARIOS + '?ajustes=1').then(r => r.json()).then(r => { if (r && r.ok) { precios = r.precios || {}; pintarPrecios(); } }).catch(() => {});
 
   // Redes sociales del pie
   const redes = $('#redes-lista');
@@ -191,21 +220,25 @@
       const plan = b.dataset.abrirPlan, inicio = b.dataset.inicio;
       form.hidden = false; $('.listo', ventana).hidden = true; $('.estado', form).hidden = true;
       if (plan) form.elements.plan.value = plan;
+      $$('input[name=periodo]', form).forEach(r => { r.checked = r.value === periodo; });
       if (inicio) $$('input[name=inicio]', form).forEach(r => { r.checked = r.value === inicio; });
       $('#plan-titulo').textContent = inicio === 'PRUEBA' ? 'Prueba gratis 8 días' : 'Elegir plan';
-      abiertos.set(form, Date.now());
+      verOpciones(); abiertos.set(form, Date.now());
       if (ventana.showModal) ventana.showModal(); else ventana.setAttribute('open', '');
       setTimeout(() => form.elements.negocio.focus(), 50);
     }));
     $$('[data-cerrar]', ventana).forEach(b => b.addEventListener('click', () => ventana.close()));
     ventana.addEventListener('click', e => { if (e.target === ventana) ventana.close(); });
-    const plan = form.elements.plan, adicional = $('[data-adicional]', form), conSpotify = $('[data-con-spotify]', form);
-    const verAdicional = () => {
-      if (adicional) adicional.hidden = plan.value !== 'POS' || !estado.factura;
-      // Spotify (adicional) solo con los planes que tienen música; con el POS no se manda
-      if (conSpotify) { conSpotify.hidden = plan.value === 'POS'; if (conSpotify.hidden) form.elements.spotify.checked = false; }
-    };
-    plan.addEventListener('change', verAdicional); ventana.addEventListener('focusin', verAdicional, { once: false });
+    // Spotify (adicional) solo con «Pagar de una vez» y un plan con música (en la prueba gratis no hay Spotify)
+    function verOpciones() {
+      const conSpotify = $('[data-con-spotify]', form);
+      if (conSpotify) {
+        conSpotify.hidden = form.elements.plan.value === 'POS' || !$('#s-pagar', form).checked;
+        if (conSpotify.hidden) form.elements.spotify.checked = false;
+      }
+      pintarPrecios();
+    }
+    form.addEventListener('change', e => { if (/^(plan|periodo|inicio)$/.test(e.target.name)) verOpciones(); });
   }
   const sesion = $('#ventana-sesion');
   if (sesion) {
