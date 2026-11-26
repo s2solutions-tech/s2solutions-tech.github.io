@@ -89,11 +89,14 @@
     $$('[data-precio-documento]').forEach(el => { el.textContent = p.documento_extra ? pesos(p.documento_extra) + ' COP c/u' : 'Precio a consultar'; });
     $$('[data-precio-documento-corto]').forEach(el => { el.textContent = p.documento_extra ? pesos(p.documento_extra) : 'un valor adicional (consúltanos)'; });
     if (p.documentos_mes) $$('[data-cupo-documentos]').forEach(el => { el.textContent = miles(p.documentos_mes); });
-    // Formulario: nombre del plan y su precio en la forma de pago elegida ahí
+    // Formulario: en la lista solo el nombre corto (cabe en el celular sin cortarse); el precio del plan elegido va debajo,
+    // en la forma de pago elegida ahí
     const pf = periodoForm(), n = NOMBRES();
-    $$('option[data-precio-opcion]').forEach(o => {
-      const v = precios[pf === 'ANUAL' ? o.dataset.precioOpcion + '_anual' : o.dataset.precioOpcion];   // corto: cabe en el celular
-      o.textContent = n[o.value] + (v ? ' · ' + pesos(v) + (pf === 'ANUAL' ? ' / año' : ' / mes') : (o.value === 'COMPLETO' ? ' (recomendado)' : ''));
+    $$('option[data-precio-opcion]').forEach(o => { o.textContent = n[o.value]; });
+    $$('[data-precio-plan-form]').forEach(el => {
+      const o = el.parentElement.querySelector('select option:checked');
+      const v = o && precios[pf === 'ANUAL' ? o.dataset.precioOpcion + '_anual' : o.dataset.precioOpcion];
+      el.textContent = v ? pesos(v) + ' COP / ' + (pf === 'ANUAL' ? 'año (equivale a ' + pesos(Math.round(v / 12)) + ' / mes)' : 'mes') : 'Precio a consultar';
     });
     $$('[data-precio-spotify-form]').forEach(el => { const v = precioDe('spotify', pf); el.textContent = v ? '+ ' + v : 'precio a consultar'; });
     const planForm = $('#s-plan');   // «y el certificado digital va incluido» solo en los planes con facturación

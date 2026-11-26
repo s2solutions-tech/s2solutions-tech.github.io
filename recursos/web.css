@@ -216,6 +216,7 @@ h1 .prota { background: var(--degradado); -webkit-background-clip: text; backgro
 .selector { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--gris); }
 .selector button { font: 600 15px var(--texto); color: var(--texto-2); background: none; border: 0; border-radius: 999px; padding: 9px 20px; cursor: pointer; min-height: 40px; }
 .selector button[aria-pressed="true"] { background: var(--graphite); color: var(--blanco); }
+.precio-plan { margin: 6px 0 0; font-size: 14px; font-weight: 600; color: var(--graphite); }
 @media (max-width: 600px) {
   .selector[data-factura] { display: flex; width: 100%; }
   .selector[data-factura] button { flex: 1; padding: 8px 10px; font-size: 14px; line-height: 1.25; }
