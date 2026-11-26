@@ -57,19 +57,28 @@
   // (empieza con la que se estaba viendo al tocar «Elegir plan»).
   const pesos = n => '$' + Number(n).toLocaleString('es-CO');
   const miles = n => Number(n).toLocaleString('es-CO');
-  let precios = {}, periodo = 'MENSUAL';
-  const NOMBRES = () => ({ MUSICA: 'Música', POS: estado.factura ? 'POS + Facturación' : 'POS', COMPLETO: 'Completo' });
+  // Con / Sin facturación electrónica: el otro selector de arriba de los planes (por defecto Con). Solo cambia la sección de planes:
+  // sin facturación, POS y Completo usan sus precios «_sin_fe» de «Ajustes» y se ocultan el certificado, el cupo y los adicionales de facturación.
+  let precios = {}, periodo = 'MENSUAL', conFE = true;
+  const fe = () => estado.factura && conFE;
+  const SIN_FE = { pos: 'pos_sin_fe', completo: 'completo_sin_fe' };
+  const clave = k => (!fe() && SIN_FE[k]) || k;
+  const NOMBRES = () => ({ MUSICA: 'Música', POS: estado.factura ? 'POS + Facturación' : 'POS', COMPLETO: 'Completo',
+                           POS_SIN_FE: 'POS', COMPLETO_SIN_FE: 'Completo sin facturación' });
   const periodoForm = () => { const r = $('#ventana-plan input[name=periodo]:checked'); return r ? r.value : 'MENSUAL'; };
   /** «$15.000 COP / mes» o «$150.000 COP / año» según el periodo; null si ese precio no está en «Ajustes». */
   const precioDe = (clave, per) => { const v = precios[per === 'ANUAL' ? clave + '_anual' : clave]; return v ? pesos(v) + ' COP / ' + (per === 'ANUAL' ? 'año' : 'mes') : null; };
   function pintarPrecios() {
     const p = precios, anual = periodo === 'ANUAL';
     $$('[data-periodo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.periodo === periodo)));
+    $$('[data-fe]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.fe === 'SI') === conFE)));
+    $$('[data-con-fe]').forEach(el => { el.hidden = !fe(); });
+    $$('[data-sin-fe]').forEach(el => { el.hidden = fe(); });
     $$('[data-solo-anual]').forEach(el => { el.hidden = !anual; });
-    $$('[data-precio]').forEach(el => { const v = p[anual ? el.dataset.precio + '_anual' : el.dataset.precio]; el.textContent = v ? pesos(v) : 'Consúltanos'; });
+    $$('[data-precio]').forEach(el => { const k = clave(el.dataset.precio), v = p[anual ? k + '_anual' : k]; el.textContent = v ? pesos(v) : 'Consúltanos'; });
     $$('[data-por]').forEach(el => { el.textContent = anual ? 'COP / año' : 'COP / mes'; });
     $$('[data-equivale]').forEach(el => {
-      const v = p[el.dataset.equivale + '_anual'];
+      const v = p[clave(el.dataset.equivale) + '_anual'];
       el.hidden = !(anual && v); el.textContent = anual && v ? 'Equivale a ' + pesos(Math.round(v / 12)) + ' / mes' : '';
     });
     const cert = p.certificado ? pesos(p.certificado) + ' COP / año' : 'precio a consultar';
@@ -87,10 +96,13 @@
       o.textContent = n[o.value] + (v ? ' · ' + pesos(v) + (pf === 'ANUAL' ? ' / año' : ' / mes') : (o.value === 'COMPLETO' ? ' (recomendado)' : ''));
     });
     $$('[data-precio-spotify-form]').forEach(el => { const v = precioDe('spotify', pf); el.textContent = v ? '+ ' + v : 'precio a consultar'; });
+    const planForm = $('#s-plan');   // «y el certificado digital va incluido» solo en los planes con facturación
+    $$('[data-form-fe]').forEach(el => { el.hidden = !estado.factura || !!(planForm && /_SIN_FE$/.test(planForm.value)); });
   }
   repintar = pintarPrecios;
   pintarPrecios();
   $$('[data-periodo]').forEach(b => b.addEventListener('click', () => { periodo = b.dataset.periodo; pintarPrecios(); }));
+  $$('[data-fe]').forEach(b => b.addEventListener('click', () => { conFE = b.dataset.fe === 'SI'; pintarPrecios(); }));
   if (S2.URL_FORMULARIOS)
     fetch(S2.URL_FORMULARIOS + '?ajustes=1').then(r => r.json()).then(r => { if (r && r.ok) { precios = r.precios || {}; pintarPrecios(); } }).catch(() => {});
 
@@ -217,7 +229,9 @@
     const form = $('form', ventana);
     $$('[data-abrir-plan]').forEach(b => b.addEventListener('click', e => {
       e.preventDefault();
-      const plan = b.dataset.abrirPlan, inicio = b.dataset.inicio;
+      const inicio = b.dataset.inicio;
+      let plan = b.dataset.abrirPlan;
+      if (plan && !fe() && SIN_FE[plan.toLowerCase()]) plan += '_SIN_FE';   // viendo los planes sin facturación
       form.hidden = false; $('.listo', ventana).hidden = true; $('.estado', form).hidden = true;
       if (plan) form.elements.plan.value = plan;
       $$('input[name=periodo]', form).forEach(r => { r.checked = r.value === periodo; });
@@ -233,7 +247,7 @@
     function verOpciones() {
       const conSpotify = $('[data-con-spotify]', form);
       if (conSpotify) {
-        conSpotify.hidden = form.elements.plan.value === 'POS' || !$('#s-pagar', form).checked;
+        conSpotify.hidden = /^POS/.test(form.elements.plan.value) || !$('#s-pagar', form).checked;
         if (conSpotify.hidden) form.elements.spotify.checked = false;
       }
       pintarPrecios();
